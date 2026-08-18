@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#05070b">
+<title>JARVIS v7</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#05070b;color:#eafaff;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Arial,sans-serif}
+#orb{position:fixed;right:18px;top:max(18px,env(safe-area-inset-top));width:58px;height:58px;border-radius:50%;border:1px solid #4adfff66;background:#06131a;box-shadow:0 0 20px #20bfff66;z-index:10}
+#orb:after{content:"";display:block;width:16px;height:16px;margin:auto;border-radius:50%;background:#42ddff;box-shadow:0 0 14px #42ddff,0 0 32px #42ddff}
+#panel{display:none;position:fixed;right:14px;top:88px;width:min(400px,calc(100vw - 28px));max-height:calc(100vh - 105px);background:#071018f7;border:1px solid #294957;border-radius:24px;z-index:9;box-shadow:0 22px 70px #000d;overflow:hidden}
+#panel.open{display:flex;flex-direction:column}
+header{padding:18px}.brand{letter-spacing:.35em;font-weight:800}.status{margin-top:5px;font-size:12px;color:#91aeb9}
+#messages{overflow:auto;padding:0 14px 10px;min-height:150px}.msg{padding:11px 13px;border-radius:14px;margin:8px 0;font-size:14px;line-height:1.4;white-space:pre-wrap}.j{background:#0b1b24}.u{background:#123a51;margin-left:35px}
+.row{display:flex;gap:8px;padding:10px 14px}.row input{flex:1;min-width:0;border:1px solid #294957;border-radius:13px;background:#0b171e;color:#fff;padding:13px;font-size:15px}.send,.talk,.close{border:0;border-radius:13px;padding:12px 14px;font-weight:750}.send{background:#42ddff;color:#041016}.talk{flex:1;background:#e5faff;color:#061016}.close{background:#1b2930;color:#fff}.bottom{display:flex;gap:8px;padding:0 14px 16px}
+</style>
+</head>
+<body>
+<button id="orb" aria-label="Open JARVIS"></button>
+<section id="panel">
+<header><div class="brand">J A R V I S</div><div id="status" class="status">READY • TYPE OR TALK</div></header>
+<div id="messages"><div class="msg j">JARVIS online. Ask me something.</div></div>
+<div class="row"><input id="input" placeholder="Ask JARVIS anything…" autocomplete="off"><button id="send" class="send">Send</button></div>
+<div class="bottom"><button id="talk" class="talk">🎙️ Talk</button><button id="close" class="close">Close</button></div>
+</section>
+<script src="./app.js"></script>
+</body>
+</html>
