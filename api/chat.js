@@ -20,6 +20,28 @@ function getOutputText(data) {
   return parts.join('\n').trim();
 }
 
+function getProvider() {
+  if (process.env.GROQ_API_KEY) {
+    return {
+      name: 'groq',
+      apiKey: process.env.GROQ_API_KEY,
+      baseUrl: 'https://api.groq.com/openai/v1',
+      model: process.env.GROQ_MODEL || 'openai/gpt-oss-20b',
+    };
+  }
+
+  if (process.env.OPENAI_API_KEY) {
+    return {
+      name: 'openai',
+      apiKey: process.env.OPENAI_API_KEY,
+      baseUrl: 'https://api.openai.com/v1',
+      model: process.env.OPENAI_MODEL || 'gpt-5.6',
+    };
+  }
+
+  return null;
+}
+
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
 
@@ -28,9 +50,9 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    return res.status(500).json({ error: 'JARVIS is missing OPENAI_API_KEY on the server.' });
+  const provider = getProvider();
+  if (!provider) {
+    return res.status(500).json({ error: 'JARVIS has no AI provider configured on the server.' });
   }
 
   const message = typeof req.body?.message === 'string' ? req.body.message.trim() : '';
@@ -40,14 +62,14 @@ export default async function handler(req, res) {
   const input = [...cleanHistory(req.body?.history), { role: 'user', content: message }];
 
   try {
-    const response = await fetch('https://api.openai.com/v1/responses', {
+    const response = await fetch(`${provider.baseUrl}/responses`, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${provider.apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: process.env.OPENAI_MODEL || 'gpt-5.6',
+        model: provider.model,
         instructions: JARVIS_INSTRUCTIONS,
         input,
       }),
@@ -55,18 +77,24 @@ export default async function handler(req, res) {
 
     const data = await response.json();
     if (!response.ok) {
-      console.error('OpenAI API error', response.status, data?.error?.code || data?.error?.type || 'unknown');
+      console.error('JARVIS provider error', provider.name, response.status, data?.error?.code || data?.error?.type || 'unknown');
       return res.status(response.status >= 500 ? 502 : 500).json({
         error: data?.error?.message || 'JARVIS brain request failed',
+        provider: provider.name,
       });
     }
 
     const reply = getOutputText(data);
-    if (!reply) return res.status(502).json({ error: 'JARVIS returned an empty response' });
+    if (!reply) return res.status(502).json({ error: 'JARVIS returned an empty response', provider: provider.name });
 
-    return res.status(200).json({ reply, responseId: data.id || null });
+    return res.status(200).json({
+      reply,
+      responseId: data.id || null,
+      provider: provider.name,
+      model: data.model || provider.model,
+    });
   } catch (error) {
-    console.error('JARVIS chat failure', error);
-    return res.status(500).json({ error: 'JARVIS could not reach the AI service' });
+    console.error('JARVIS chat failure', provider.name, error);
+    return res.status(500).json({ error: 'JARVIS could not reach the AI service', provider: provider.name });
   }
 }
