@@ -9,16 +9,15 @@
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif}body{user-select:none;-webkit-user-select:none;background:radial-gradient(circle at 50% 44%,#151515 0,#070707 34%,#000 72%)}
 .stage{position:relative;width:100%;height:100%;display:grid;place-items:center;overflow:hidden;cursor:default}.noise{position:absolute;inset:0;opacity:.16;background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);background-size:42px 42px;mask-image:radial-gradient(circle at center,#000 20%,transparent 76%)}
 .ring,.ring:before,.ring:after{position:absolute;border-radius:50%;border:1px solid #ffffff2d}.ring{width:min(84vw,720px);aspect-ratio:1;box-shadow:0 0 80px #ffffff0c,inset 0 0 70px #ffffff08;animation:spin 26s linear infinite}.ring:before,.ring:after{content:"";inset:8%;border-style:dashed}.ring:after{inset:21%;border-style:solid;border-color:#ffffff18}.ring2{position:absolute;width:min(68vw,580px);aspect-ratio:1;border:1px dashed #ffffff2d;border-radius:50%;animation:spinBack 18s linear infinite}
-.faceWrap{position:relative;z-index:3;width:min(55vw,420px);height:min(72vh,560px);display:grid;place-items:center;filter:drop-shadow(0 0 26px #ffffff22)}.faceSvg{width:100%;height:100%;overflow:visible}.wire{fill:none;stroke:#fff;stroke-width:1.2;opacity:.82}.mesh{fill:none;stroke:#ffffff42;stroke-width:.55}.eye{fill:#fff;filter:drop-shadow(0 0 8px #fff) drop-shadow(0 0 20px #fff);transform-origin:center;animation:blink 6.5s infinite}.pulse{animation:facePulse 2.4s ease-in-out infinite}
-#status{position:absolute;z-index:5;bottom:max(46px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:min(92vw,680px);text-align:center;letter-spacing:.18em;font-size:12px;color:#d8d8d8;text-shadow:0 0 14px #fff8}.name{position:absolute;z-index:5;top:max(28px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);font-size:22px;letter-spacing:.52em;font-weight:300;padding-left:.52em}.response{position:absolute;z-index:5;bottom:max(86px,calc(env(safe-area-inset-bottom) + 40px));left:50%;transform:translateX(-50%);width:min(86vw,760px);max-height:20vh;overflow:hidden;text-align:center;font-size:16px;line-height:1.45;color:#ededed;opacity:.9}.hint{position:absolute;z-index:5;bottom:max(20px,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);font-size:10px;color:#8c8c8c;letter-spacing:.12em;white-space:nowrap}.listening .eye{filter:drop-shadow(0 0 10px #fff) drop-shadow(0 0 28px #fff)}.speaking .faceWrap{animation:talkGlow .7s ease-in-out infinite alternate}.thinking .ring{animation-duration:7s}.thinking .ring2{animation-duration:5s}
+.faceWrap{position:relative;z-index:3;width:min(55vw,420px);height:min(72vh,560px);display:grid;place-items:center;filter:drop-shadow(0 0 26px #ffffff22)}.faceSvg{width:100%;height:100%;overflow:visible}.wire{fill:none;stroke:#fff;stroke-width:1.2;opacity:.82}.mesh{fill:none;stroke:#ffffff42;stroke-width:.55}.eye{fill:#fff;filter:drop-shadow(0 0 8px #fff) drop-shadow(0 0 20px #fff);transform-origin:center;animation:blink 6.5s infinite}.pulse{animation:facePulse 2.4s ease-in-out infinite}.listening .eye{filter:drop-shadow(0 0 10px #fff) drop-shadow(0 0 28px #fff)}.speaking .faceWrap{animation:talkGlow .7s ease-in-out infinite alternate}.thinking .ring{animation-duration:7s}.thinking .ring2{animation-duration:5s}
+#status,#response,#hint{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;opacity:0;pointer-events:none}
 @keyframes spin{to{transform:rotate(360deg)}}@keyframes spinBack{to{transform:rotate(-360deg)}}@keyframes facePulse{50%{opacity:.62}}@keyframes blink{0%,45%,47%,100%{transform:scaleY(1)}46%{transform:scaleY(.08)}}@keyframes talkGlow{from{filter:drop-shadow(0 0 18px #ffffff1f)}to{filter:drop-shadow(0 0 42px #ffffff62)}}
-@media(max-width:640px){.ring{width:112vw}.ring2{width:88vw}.faceWrap{width:78vw;height:58vh}.name{font-size:18px}.response{font-size:15px;bottom:94px}#status{bottom:54px}.hint{bottom:18px}}
+@media(max-width:640px){.ring{width:112vw}.ring2{width:88vw}.faceWrap{width:78vw;height:58vh}}
 </style>
 </head>
 <body>
 <main class="stage" id="stage" aria-label="ALFRED voice interface">
   <div class="noise"></div><div class="ring"></div><div class="ring2"></div>
-  <div class="name">ALFRED</div>
   <div class="faceWrap">
     <svg class="faceSvg" viewBox="0 0 400 520" aria-hidden="true">
       <path class="wire" d="M200 42 C126 42 76 100 70 190 C64 286 101 408 200 472 C299 408 336 286 330 190 C324 100 274 42 200 42Z"/>
@@ -31,9 +30,7 @@
       <path class="mesh pulse" d="M92 155 L307 366 M308 155 L93 366 M116 91 L284 430 M284 91 L116 430"/>
     </svg>
   </div>
-  <div id="response" class="response"></div>
-  <div id="status">INITIALIZING VOICE LINK…</div>
-  <div id="hint" class="hint">FIRST VISIT: TAP ANYWHERE ONCE • THEN SAY “ALFRED”</div>
+  <div id="response"></div><div id="status"></div><div id="hint"></div>
 </main>
 <script src="./app.js"></script>
 </body>
