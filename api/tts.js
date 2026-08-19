@@ -1,18 +1,19 @@
 export default async function handler(req,res){
   res.setHeader('Cache-Control','no-store');
-  if(req.method!=='POST'){
-    res.setHeader('Allow','POST');
+  if(req.method!=='POST'&&req.method!=='GET'){
+    res.setHeader('Allow','GET, POST');
     return res.status(405).json({error:'Method not allowed'});
   }
 
   const apiKey=process.env.GROQ_API_KEY;
   if(!apiKey)return res.status(500).json({error:'ALFRED voice is not configured'});
 
-  const text=typeof req.body?.text==='string'?req.body.text.trim():'';
+  const text=req.method==='GET'
+    ? 'ALFRED online. At your service.'
+    : (typeof req.body?.text==='string'?req.body.text.trim():'');
   if(!text)return res.status(400).json({error:'Text is required'});
   if(text.length>200)return res.status(400).json({error:'Voice text must be 200 characters or less'});
 
-  // Orpheus supports bracketed vocal directions. Keep them subtle for a polished cinematic assistant feel.
   const directed=`[formally] [calmly] ${text}`.slice(0,200);
 
   try{
