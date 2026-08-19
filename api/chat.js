@@ -62,17 +62,24 @@ export default async function handler(req, res) {
   const input = [...cleanHistory(req.body?.history), { role: 'user', content: message }];
 
   try {
+    const body = {
+      model: provider.model,
+      instructions: JARVIS_INSTRUCTIONS,
+      input,
+    };
+
+    if (provider.name === 'groq') {
+      body.reasoning = { effort: 'low' };
+      body.max_output_tokens = 1024;
+    }
+
     const response = await fetch(`${provider.baseUrl}/responses`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${provider.apiKey}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        model: provider.model,
-        instructions: JARVIS_INSTRUCTIONS,
-        input,
-      }),
+      body: JSON.stringify(body),
     });
 
     const data = await response.json();
