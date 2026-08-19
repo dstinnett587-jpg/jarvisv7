@@ -3,27 +3,49 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#05070b">
+<meta name="theme-color" content="#000000">
 <title>JARVIS v7</title>
 <style>
-*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#05070b;color:#eafaff;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Arial,sans-serif}
-#orb{position:fixed;right:18px;top:max(18px,env(safe-area-inset-top));width:58px;height:58px;border-radius:50%;border:1px solid #4adfff66;background:#06131a;box-shadow:0 0 20px #20bfff66;z-index:10}
-#orb:after{content:"";display:block;width:16px;height:16px;margin:auto;border-radius:50%;background:#42ddff;box-shadow:0 0 14px #42ddff,0 0 32px #42ddff}
-#panel{display:none;position:fixed;right:14px;top:88px;width:min(400px,calc(100vw - 28px));max-height:calc(100vh - 105px);background:#071018f7;border:1px solid #294957;border-radius:24px;z-index:9;box-shadow:0 22px 70px #000d;overflow:hidden}
-#panel.open{display:flex;flex-direction:column}
-header{padding:18px}.brand{letter-spacing:.35em;font-weight:800}.status{margin-top:5px;font-size:12px;color:#91aeb9}
-#messages{overflow:auto;padding:0 14px 10px;min-height:150px}.msg{padding:11px 13px;border-radius:14px;margin:8px 0;font-size:14px;line-height:1.4;white-space:pre-wrap}.j{background:#0b1b24}.u{background:#123a51;margin-left:35px}
-.row{display:flex;gap:8px;padding:10px 14px}.row input{flex:1;min-width:0;border:1px solid #294957;border-radius:13px;background:#0b171e;color:#fff;padding:13px;font-size:15px}.send,.talk,.close{border:0;border-radius:13px;padding:12px 14px;font-weight:750}.send{background:#42ddff;color:#041016}.talk{flex:1;background:#e5faff;color:#061016}.close{background:#1b2930;color:#fff}.bottom{display:flex;gap:8px;padding:0 14px 16px}
+:root{--bg:#000;--panel:#060606;--line:#ffffff26;--line2:#ffffff12;--text:#f5f5f5;--muted:#a9a9a9;--glow:#fff}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#000;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif}body{min-height:100vh;overflow-x:hidden;background:radial-gradient(circle at 50% 42%,#181818 0,#070707 30%,#000 68%)}
+button,input{font:inherit}.shell{min-height:100vh;display:grid;grid-template-columns:86px minmax(230px,300px) minmax(360px,1fr) minmax(250px,330px);grid-template-rows:auto 1fr;gap:14px;padding:16px}.hud{border:1px solid var(--line);background:linear-gradient(180deg,#0a0a0acc,#030303e8);border-radius:18px;box-shadow:inset 0 0 40px #ffffff05,0 0 18px #ffffff05}.topbar{grid-column:2/5;display:flex;align-items:center;justify-content:space-between;padding:12px 20px}.title{font-size:28px;letter-spacing:.42em;font-weight:300}.online{font-size:11px;letter-spacing:.36em;color:#d6d6d6}.clock{text-align:right;font-size:13px;color:#cfcfcf}.rail{grid-row:1/3;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:14px 8px}.rail .logo{width:58px;height:58px;border:2px solid white;border-radius:50%;display:grid;place-items:center;font-size:25px;box-shadow:0 0 18px #ffffff42,inset 0 0 18px #ffffff17}.nav{display:flex;flex-direction:column;gap:22px;align-items:center}.nav span{font-size:10px;letter-spacing:.08em;color:#bdbdbd}.nav i{display:block;width:26px;height:26px;border:1px solid #fff;border-radius:8px;margin:0 auto 6px;opacity:.9}.left,.right{display:flex;flex-direction:column;gap:14px}.card{padding:16px}.card h3{margin:0 0 12px;font-size:13px;letter-spacing:.1em;font-weight:600}.metric{margin:12px 0}.metric .rowm{display:flex;justify-content:space-between;color:#e9e9e9;font-size:12px}.bar{height:4px;background:#ffffff14;border-radius:99px;margin-top:7px;overflow:hidden}.bar b{display:block;height:100%;background:#fff;box-shadow:0 0 8px #fff}.spark{height:28px;margin-top:8px;background:repeating-linear-gradient(90deg,transparent 0 7px,#ffffff17 7px 8px),linear-gradient(180deg,transparent 48%,#ffffff44 50%,transparent 52%);opacity:.8}.history div,.systems div,.notifications div{padding:8px 0;border-bottom:1px solid var(--line2);font-size:12px;color:#d7d7d7;display:flex;justify-content:space-between;gap:12px}.history div:last-child,.systems div:last-child,.notifications div:last-child{border-bottom:0}.systems b{font-weight:500;color:#fff;letter-spacing:.08em}.center{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:650px;overflow:hidden;padding:26px}.rings{position:absolute;width:min(56vw,540px);aspect-ratio:1;border:1px solid #ffffff2c;border-radius:50%;box-shadow:0 0 60px #ffffff0b,inset 0 0 50px #ffffff08}.rings:before,.rings:after{content:"";position:absolute;border-radius:50%;inset:8%;border:1px dashed #ffffff30}.rings:after{inset:20%;border-style:solid;border-color:#ffffff18}.core{position:relative;z-index:2;width:min(39vw,360px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;border:1px solid #ffffff80;box-shadow:0 0 40px #ffffff23,inset 0 0 70px #ffffff0f;background:radial-gradient(circle,#ffffff14 0,#ffffff08 18%,#0000 56%)}.face{width:54%;height:68%;border:1px solid #ffffff9a;border-radius:48% 48% 44% 44%/40% 40% 58% 58%;position:relative;box-shadow:0 0 26px #ffffff22}.face:before,.face:after{content:"";position:absolute;top:38%;width:24%;height:7%;border-radius:50%;background:#fff;box-shadow:0 0 16px #fff}.face:before{left:16%}.face:after{right:16%}.gridlines{position:absolute;inset:5%;border-radius:50%;background:repeating-radial-gradient(circle,#ffffff20 0 1px,transparent 1px 11px);mask:radial-gradient(circle,#000 0 58%,transparent 72%);opacity:.45}.wave{z-index:2;width:min(78%,600px);height:36px;margin-top:34px;background:repeating-linear-gradient(90deg,#fff 0 2px,transparent 2px 9px);mask:linear-gradient(180deg,transparent 0,#000 34%,#000 66%,transparent 100%);opacity:.8;animation:pulse 1.4s ease-in-out infinite alternate}@keyframes pulse{from{transform:scaleY(.45);opacity:.45}to{transform:scaleY(1);opacity:.95}}.prompt{z-index:2;margin-top:18px;border:1px solid #ffffff56;border-radius:16px;padding:15px 26px;min-width:min(86%,520px);text-align:center;font-size:20px;color:#ededed;background:#050505cc}.mic{z-index:3;margin-top:20px;width:78px;height:78px;border:1px solid #fff;border-radius:50%;background:#050505;color:white;font-size:28px;box-shadow:0 0 24px #ffffff40;cursor:pointer}.mic:hover{box-shadow:0 0 34px #ffffff70}.chatdock{z-index:4;width:min(92%,680px);margin-top:18px}.row{display:flex;gap:8px}.row input{flex:1;min-width:0;border:1px solid #ffffff38;border-radius:14px;background:#050505;color:#fff;padding:13px 14px;outline:none}.row input:focus{border-color:#ffffff99;box-shadow:0 0 16px #ffffff16}.send,.talk,.close{border:1px solid #ffffff38;border-radius:14px;padding:12px 14px;background:#0b0b0b;color:white;cursor:pointer}.send{background:#fff;color:#000;font-weight:700}.bottom{display:flex;gap:8px;margin-top:8px}.talk{flex:1}.close{display:none}#status{font-size:11px;letter-spacing:.12em;color:#bdbdbd;margin:8px 0 10px;text-align:center}#messages{max-height:190px;overflow:auto;padding:4px}.msg{padding:10px 12px;border-radius:12px;margin:7px 0;font-size:13px;line-height:1.4;white-space:pre-wrap;border:1px solid #ffffff14}.j{background:#090909}.u{background:#151515;margin-left:28px}.weatherMain{font-size:34px;font-weight:300;margin:5px 0}.muted{color:var(--muted);font-size:12px}.datebox{display:flex;justify-content:space-between;gap:10px}.bigtime{font-size:38px;font-weight:250}.events div{padding:5px 0;font-size:12px;color:#d2d2d2}.events b{display:inline-block;width:66px;color:#fff;font-weight:500}#orb{position:absolute;inset:auto;opacity:0;pointer-events:none}
+@media(max-width:1100px){.shell{grid-template-columns:72px minmax(210px,260px) 1fr}.topbar{grid-column:2/4}.right{display:none}.core{width:min(48vw,340px)}}
+@media(max-width:760px){body{overflow:auto}.shell{display:block;padding:10px}.rail,.left,.right{display:none}.topbar{margin-bottom:10px;padding:12px 14px}.title{font-size:20px}.clock{display:none}.center{min-height:calc(100vh - 92px);padding:20px 10px}.rings{width:88vw}.core{width:68vw;max-width:310px}.prompt{font-size:17px;min-width:92%}.chatdock{width:96%}.close{display:inline-block}.mic{width:72px;height:72px}.wave{width:90%}}
 </style>
 </head>
 <body>
-<button id="orb" aria-label="Open JARVIS"></button>
-<section id="panel">
-<header><div class="brand">J A R V I S</div><div id="status" class="status">READY • TYPE OR TALK</div></header>
-<div id="messages"><div class="msg j">JARVIS online. Ask me something.</div></div>
-<div class="row"><input id="input" placeholder="Ask JARVIS anything…" autocomplete="off"><button id="send" class="send">Send</button></div>
-<div class="bottom"><button id="talk" class="talk">🎙️ Talk</button><button id="close" class="close">Close</button></div>
-</section>
+<div class="shell">
+  <aside class="rail hud"><div class="logo">J</div><div class="nav"><div><i></i><span>CHAT</span></div><div><i></i><span>SYSTEM</span></div><div><i></i><span>TOOLS</span></div><div><i></i><span>FILES</span></div><div><i></i><span>CAMERA</span></div></div><div class="nav"><div><i></i><span>SETTINGS</span></div></div></aside>
+  <header class="topbar hud"><div><div class="title">JARVIS</div><div class="online">● ONLINE</div></div><div class="clock"><div id="dateText">SYSTEM READY</div><div class="bigtime" id="timeText">--:--</div></div></header>
+  <section class="left">
+    <div class="card hud"><h3>SYSTEM STATUS</h3><div class="metric"><div class="rowm"><span>CORE</span><span>ONLINE</span></div><div class="bar"><b style="width:100%"></b></div></div><div class="metric"><div class="rowm"><span>MEMORY</span><span>23%</span></div><div class="spark"></div></div><div class="metric"><div class="rowm"><span>NETWORK</span><span>68%</span></div><div class="spark"></div></div><div class="metric"><div class="rowm"><span>VOICE</span><span>READY</span></div><div class="bar"><b style="width:88%"></b></div></div></div>
+    <div class="card hud history"><h3>COMMAND HISTORY</h3><div><span>System Check</span><span>Complete</span></div><div><span>Voice Link</span><span>Complete</span></div><div><span>AI Brain</span><span>Online</span></div><div><span>Wake Listener</span><span>Ready</span></div></div>
+    <div class="card hud events"><h3>UPCOMING EVENTS</h3><div><b>10:00</b> System review</div><div><b>12:30</b> Project work</div><div><b>15:00</b> JARVIS testing</div></div>
+  </section>
+  <main class="center hud" id="panel">
+    <button id="orb" aria-label="Open JARVIS"></button>
+    <div class="rings"><div class="gridlines"></div></div>
+    <div class="core"><div class="face"></div></div>
+    <div class="wave"></div>
+    <div class="prompt">How can I help you?</div>
+    <button id="talk" class="mic" aria-label="JARVIS voice">◉</button>
+    <div class="chatdock">
+      <div id="status">READY • SAY JARVIS OR TYPE</div>
+      <div id="messages"><div class="msg j">JARVIS online. Ask me something.</div></div>
+      <div class="row"><input id="input" placeholder="Ask JARVIS anything…" autocomplete="off"><button id="send" class="send">Send</button></div>
+      <div class="bottom"><button class="talk" onclick="document.getElementById('talk').click()">Voice Mode</button><button id="close" class="close">Close</button></div>
+    </div>
+  </main>
+  <section class="right">
+    <div class="card hud"><div class="datebox"><div><div class="muted">LOCAL TIME</div><div class="bigtime" id="timeText2">--:--</div></div><div class="muted" id="dateText2"></div></div></div>
+    <div class="card hud"><h3>WEATHER</h3><div class="weatherMain">—°</div><div class="muted">Weather module ready</div></div>
+    <div class="card hud notifications"><h3>NOTIFICATIONS</h3><div><span>JARVIS brain connected</span><span>Now</span></div><div><span>Groq voice configured</span><span>Ready</span></div><div><span>Secure API routing</span><span>Online</span></div></div>
+    <div class="card hud systems"><h3>JARVIS SYSTEMS</h3><div><span>Voice Recognition</span><b>ONLINE</b></div><div><span>Speech Synthesis</span><b>ONLINE</b></div><div><span>AI Brain</span><b>ONLINE</b></div><div><span>Memory</span><b>PLANNED</b></div><div><span>Tool Actions</span><b>PLANNED</b></div><div><span>Computer Control</span><b>LOCKED</b></div></div>
+  </section>
+</div>
+<script>
+function tick(){const d=new Date();const t=d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});const ds=d.toLocaleDateString([], {weekday:'long',month:'short',day:'numeric'});for(const id of ['timeText','timeText2']){const e=document.getElementById(id);if(e)e.textContent=t}for(const id of ['dateText','dateText2']){const e=document.getElementById(id);if(e)e.textContent=ds}}tick();setInterval(tick,1000);
+</script>
 <script src="./app.js"></script>
 </body>
 </html>
