@@ -10,9 +10,10 @@
 .stage{position:relative;width:100%;height:100%;display:grid;place-items:center;overflow:hidden;cursor:default}.noise{position:absolute;inset:0;opacity:.16;background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);background-size:42px 42px;mask-image:radial-gradient(circle at center,#000 20%,transparent 76%)}
 .ring,.ring:before,.ring:after{position:absolute;border-radius:50%;border:1px solid #ffffff2d}.ring{width:min(84vw,720px);aspect-ratio:1;box-shadow:0 0 80px #ffffff0c,inset 0 0 70px #ffffff08;animation:spin 26s linear infinite}.ring:before,.ring:after{content:"";inset:8%;border-style:dashed}.ring:after{inset:21%;border-style:solid;border-color:#ffffff18}.ring2{position:absolute;width:min(68vw,580px);aspect-ratio:1;border:1px dashed #ffffff2d;border-radius:50%;animation:spinBack 18s linear infinite}
 .faceWrap{position:relative;z-index:3;width:min(55vw,420px);height:min(72vh,560px);display:grid;place-items:center;filter:drop-shadow(0 0 26px #ffffff22)}.faceSvg{width:100%;height:100%;overflow:visible}.wire{fill:none;stroke:#fff;stroke-width:1.2;opacity:.82}.mesh{fill:none;stroke:#ffffff42;stroke-width:.55}.eye{fill:#fff;filter:drop-shadow(0 0 8px #fff) drop-shadow(0 0 20px #fff);transform-origin:center;animation:blink 6.5s infinite}.pulse{animation:facePulse 2.4s ease-in-out infinite}.listening .eye{filter:drop-shadow(0 0 10px #fff) drop-shadow(0 0 28px #fff)}.speaking .faceWrap{animation:talkGlow .7s ease-in-out infinite alternate}.thinking .ring{animation-duration:7s}.thinking .ring2{animation-duration:5s}
+.activateBtn{position:absolute;z-index:10;left:50%;bottom:max(28px,env(safe-area-inset-bottom));transform:translateX(-50%);border:1px solid #ffffff55;background:#0b0b0be6;color:#fff;border-radius:999px;padding:12px 20px;font:600 13px/1 -apple-system,BlinkMacSystemFont,"SF Pro Display",sans-serif;letter-spacing:.08em;text-transform:uppercase;box-shadow:0 0 24px #ffffff18;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:opacity .25s ease,transform .25s ease}.activateBtn:active{transform:translateX(-50%) scale(.97)}.activateBtn.hidden{opacity:0;pointer-events:none;transform:translateX(-50%) translateY(10px)}
 #status,#response,#hint{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;opacity:0;pointer-events:none}
 @keyframes spin{to{transform:rotate(360deg)}}@keyframes spinBack{to{transform:rotate(-360deg)}}@keyframes facePulse{50%{opacity:.62}}@keyframes blink{0%,45%,47%,100%{transform:scaleY(1)}46%{transform:scaleY(.08)}}@keyframes talkGlow{from{filter:drop-shadow(0 0 18px #ffffff1f)}to{filter:drop-shadow(0 0 42px #ffffff62)}}
-@media(max-width:640px){.ring{width:112vw}.ring2{width:88vw}.faceWrap{width:78vw;height:58vh}}
+@media(max-width:640px){.ring{width:112vw}.ring2{width:88vw}.faceWrap{width:78vw;height:58vh}.activateBtn{bottom:max(22px,env(safe-area-inset-bottom));padding:12px 18px;font-size:12px}}
 </style>
 </head>
 <body>
@@ -30,6 +31,7 @@
       <path class="mesh pulse" d="M92 155 L307 366 M308 155 L93 366 M116 91 L284 430 M284 91 L116 430"/>
     </svg>
   </div>
+  <button class="activateBtn" id="activateBtn" type="button">Start Alfred</button>
   <div id="response"></div><div id="status"></div><div id="hint"></div>
 </main>
 <script src="./app.js"></script>
