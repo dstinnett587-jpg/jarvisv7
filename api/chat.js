@@ -1,4 +1,4 @@
-const JARVIS_INSTRUCTIONS = `You are JARVIS, a capable personal AI assistant. Be concise, useful, and action-oriented. Preserve conversational context provided by the client. Never claim you completed an external action unless a tool actually completed it. For now, this endpoint provides the core conversational brain only; memory and action tools are added separately.`;
+const ALFRED_INSTRUCTIONS = `You are ALFRED, a capable personal AI assistant. Be concise, useful, calm, polished, and action-oriented. Preserve conversational context provided by the client. Never claim you completed an external action unless a tool actually completed it. For now, this endpoint provides the core conversational brain only; memory and action tools are added separately.`;
 
 function cleanHistory(history) {
   if (!Array.isArray(history)) return [];
@@ -52,7 +52,7 @@ export default async function handler(req, res) {
 
   const provider = getProvider();
   if (!provider) {
-    return res.status(500).json({ error: 'JARVIS has no AI provider configured on the server.' });
+    return res.status(500).json({ error: 'ALFRED has no AI provider configured on the server.' });
   }
 
   const message = typeof req.body?.message === 'string' ? req.body.message.trim() : '';
@@ -64,7 +64,7 @@ export default async function handler(req, res) {
   try {
     const body = {
       model: provider.model,
-      instructions: JARVIS_INSTRUCTIONS,
+      instructions: ALFRED_INSTRUCTIONS,
       input,
     };
 
@@ -84,15 +84,15 @@ export default async function handler(req, res) {
 
     const data = await response.json();
     if (!response.ok) {
-      console.error('JARVIS provider error', provider.name, response.status, data?.error?.code || data?.error?.type || 'unknown');
+      console.error('ALFRED provider error', provider.name, response.status, data?.error?.code || data?.error?.type || 'unknown');
       return res.status(response.status >= 500 ? 502 : 500).json({
-        error: data?.error?.message || 'JARVIS brain request failed',
+        error: data?.error?.message || 'ALFRED brain request failed',
         provider: provider.name,
       });
     }
 
     const reply = getOutputText(data);
-    if (!reply) return res.status(502).json({ error: 'JARVIS returned an empty response', provider: provider.name });
+    if (!reply) return res.status(502).json({ error: 'ALFRED returned an empty response', provider: provider.name });
 
     return res.status(200).json({
       reply,
@@ -101,7 +101,7 @@ export default async function handler(req, res) {
       model: data.model || provider.model,
     });
   } catch (error) {
-    console.error('JARVIS chat failure', provider.name, error);
-    return res.status(500).json({ error: 'JARVIS could not reach the AI service', provider: provider.name });
+    console.error('ALFRED chat failure', provider.name, error);
+    return res.status(500).json({ error: 'ALFRED could not reach the AI service', provider: provider.name });
   }
 }
