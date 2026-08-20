@@ -1,20 +1,21 @@
 {
-  "id": "chatgpt-yt-naruto-sasuke-screen-20260820-2",
+  "id": "chatgpt-yt-boruto-two-blue-vortex-20260820-1",
   "action": "show_results",
   "payload": {
     "title": "J · NOW PLAYING",
-    "message": "Naruto vs Sasuke: The Final Attack | Naruto Shippuden",
-    "video_url": "https://www.youtube.com/embed/9ty1v5xXcJI",
+    "message": "BORUTO -TWO BLUE VORTEX- | OFFICIAL MANGA VIDEO",
+    "video_url": "https://www.youtube.com/embed/9L2bRn9by0I",
+    "open_url": "https://www.youtube.com/watch?v=9L2bRn9by0I",
     "items": [
       {
-        "name": "Naruto vs Sasuke: The Final Attack | Naruto Shippuden",
-        "type": "YouTube",
-        "reason": "Show this video directly inside J on the Mac screen."
+        "name": "BORUTO -TWO BLUE VORTEX- | OFFICIAL MANGA VIDEO",
+        "type": "YouTube · MANGA Plus by SHUEISHA",
+        "reason": "Newer official Boruto Two Blue Vortex video. Show it on J's Mac screen and provide the YouTube link."
       }
     ]
   },
   "display": {
     "source": "chatgpt",
-    "label": "PLAY ON MAC: Naruto vs Sasuke"
+    "label": "PLAY ON MAC: New Boruto Two Blue Vortex"
   }
 }
