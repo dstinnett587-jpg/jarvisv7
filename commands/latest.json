@@ -1,0 +1,6 @@
+{
+  "id": "init-vision-bridge",
+  "action": "status",
+  "payload": {},
+  "display": {"source": "chatgpt", "label": "Remote bridge initialized"}
+}
