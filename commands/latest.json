@@ -1,9 +1,9 @@
 {
-  "id": "chatgpt-test-gear-20260820-3",
+  "id": "chatgpt-live-gear-test-20260820-4",
   "action": "show_results",
   "payload": {
     "title": "J · PHONES + SMART GLASSES",
-    "message": "Current picks researched from ChatGPT for J hardware.",
+    "message": "Live test from ChatGPT to J on Mac.",
     "items": [
       {"name":"Samsung Galaxy S26 Ultra","type":"Phone","reason":"Best Android control phone for J; powerful hardware and Samsung DeX flexibility."},
       {"name":"iPhone 17 Pro Max","type":"Phone","reason":"Strong camera, video, and Mac ecosystem integration."},
@@ -15,6 +15,6 @@
   },
   "display": {
     "source": "chatgpt",
-    "label": "Find 3 good phones and 3 smart glasses to add to J"
+    "label": "LIVE TEST: Find 3 phones and 3 smart glasses for J"
   }
 }
