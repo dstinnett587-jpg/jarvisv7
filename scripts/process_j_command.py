@@ -58,6 +58,7 @@ def main():
             items=p.get('items') or []
             if not isinstance(items,list): raise RuntimeError('Invalid result items')
             result.update({'title':str(p.get('title') or 'J · REMOTE RESEARCH')[:120],'message':str(p.get('message') or 'Remote research complete.')[:500],'count':len(items),'items':items[:20]})
+            if p.get('video_url'): result['video_url']=str(p.get('video_url'))[:500]
         else:
             raise RuntimeError('Unsupported command')
     except Exception as e:
