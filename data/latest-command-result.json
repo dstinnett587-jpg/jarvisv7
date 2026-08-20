@@ -1,15 +1,11 @@
 {
-  "command_id": "chatgpt-test-dallas-3-20260820",
-  "action": "find_leads",
-  "status": "complete",
-  "completed_at": "2026-08-20T18:05:00Z",
-  "display": {"source": "chatgpt", "label": "Scan Dallas for 3 businesses"},
-  "title": "J · DALLAS REMOTE TEST",
-  "location": "Dallas, TX",
-  "count": 3,
-  "leads": [
-    {"name":"Sauccy Fades Dallas Barbershop","category":"barber shop","phone":"+1 254-420-8647","address":"5301 Alpha Rd C-49, Dallas, TX 75240","source":"live business search"},
-    {"name":"Shine City Auto Detailing","category":"car detailing service","phone":"+1 469-427-8162","address":"6234 Winton St, Dallas, TX 75214","source":"live business search"},
-    {"name":"RCJ Cleaning Specialists","category":"house cleaning service","phone":"+1 469-708-4466","address":"Dallas, TX","source":"live business search"}
-  ]
+  "command_id": "chatgpt-test-gear-20260820-2",
+  "action": "research_products",
+  "status": "failed",
+  "completed_at": "2026-08-20T18:04:48.458405+00:00",
+  "error": "Unsupported command",
+  "display": {
+    "source": "chatgpt",
+    "label": "Find 3 good phones and 3 smart glasses to add to J"
+  }
 }
