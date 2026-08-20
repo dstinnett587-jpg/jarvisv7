@@ -1,0 +1,6 @@
+{
+  "command_id": "init-vision-bridge",
+  "action": "status",
+  "status": "pending",
+  "message": "Waiting for first remote command."
+}
