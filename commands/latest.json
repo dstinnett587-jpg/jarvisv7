@@ -1,17 +1,17 @@
 {
-  "id": "chatgpt-car-test-20260820-1",
+  "id": "chatgpt-mac-screen-test-20260820-1",
   "action": "show_results",
   "payload": {
-    "title": "J · CAR MODE TEST",
-    "message": "Remote command received from ChatGPT. Car mode connection test successful.",
+    "title": "J · MAC SCREEN TEST",
+    "message": "Command received from ChatGPT. Display this test on the Mac and open the SYSTEM workspace so we can verify J can control his on-screen interface.",
     "items": [
-      {"name":"REMOTE LINK","type":"Status","reason":"ChatGPT command reached J."},
-      {"name":"MAC DASHBOARD","type":"Status","reason":"This task should appear on the J remote task card."},
-      {"name":"CAR PHONE","type":"Next test","reason":"Open Car Mode on the second phone and tap Remote Tasks to pull the same command."}
+      {"name":"STEP 1","type":"Screen test","reason":"Show this remote task on the Mac."},
+      {"name":"STEP 2","type":"J interface","reason":"Open or focus J's SYSTEM workspace."},
+      {"name":"STEP 3","type":"Verification","reason":"If this card appears, ChatGPT to J screen delivery is working. Full macOS app/window control still requires the local Mac Agent."}
     ]
   },
   "display": {
     "source": "chatgpt",
-    "label": "CAR MODE TEST: ChatGPT to J"
+    "label": "MAC SCREEN TEST: show task and SYSTEM workspace"
   }
 }
