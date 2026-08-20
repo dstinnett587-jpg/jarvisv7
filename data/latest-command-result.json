@@ -1,11 +1,11 @@
 {
-  "command_id": "chatgpt-mac-agent-speed-test-20260820-1",
+  "command_id": "chatgpt-mac-agent-ai-video-20260820-1",
   "action": "open_url",
   "status": "failed",
-  "completed_at": "2026-08-20T19:08:24.092161+00:00",
+  "completed_at": "2026-08-20T19:33:50.922479+00:00",
   "error": "Unsupported command",
   "display": {
     "source": "chatgpt",
-    "label": "SPEED TEST: Smart glasses search"
+    "label": "OPEN ON MAC: AI computer-use browser automation video"
   }
 }
