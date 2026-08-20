@@ -1,11 +1,11 @@
 {
-  "id": "chatgpt-mac-agent-search-test-20260820-1",
+  "id": "chatgpt-mac-agent-search-test-20260820-2",
   "action": "open_url",
   "payload": {
     "url": "https://www.google.com/search?q=best+barbers+in+Dallas+TX"
   },
   "display": {
     "source": "chatgpt",
-    "label": "OPEN ON MAC: Best barbers in Dallas"
+    "label": "OPEN ON MAC: Best barbers in Dallas — retry"
   }
 }
