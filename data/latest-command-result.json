@@ -1,21 +1,21 @@
 {
-  "command_id": "chatgpt-surprise-s26-video-20260820-1",
+  "command_id": "chatgpt-yt-boruto-replay-20260820-2",
   "action": "show_results",
   "status": "complete",
-  "completed_at": "2026-08-20T18:46:01.894052+00:00",
+  "completed_at": "2026-08-20T18:49:20.679417+00:00",
   "display": {
     "source": "chatgpt",
-    "label": "J PICKED THIS: Galaxy S26 Ultra"
+    "label": "PLAY ON MAC: Boruto Two Blue Vortex"
   },
-  "title": "J · SURPRISE TEST",
-  "message": "Introducing Galaxy S26 Ultra | Galaxy AI | Samsung",
+  "title": "J · NOW PLAYING",
+  "message": "BORUTO -TWO BLUE VORTEX- | OFFICIAL MANGA VIDEO",
   "count": 1,
   "items": [
     {
-      "name": "Introducing Galaxy S26 Ultra | Galaxy AI | Samsung",
-      "type": "YouTube · Samsung",
-      "reason": "J picked this because we're testing devices that could become part of the J setup. Show the official Samsung video on the Mac and provide the open link."
+      "name": "BORUTO -TWO BLUE VORTEX- | OFFICIAL MANGA VIDEO",
+      "type": "YouTube · MANGA Plus by SHUEISHA",
+      "reason": "Replay the Boruto Two Blue Vortex video on J's Mac screen."
     }
   ],
-  "video_url": "https://www.youtube.com/embed/2gYqEi8-am4"
+  "video_url": "https://www.youtube.com/embed/9L2bRn9by0I"
 }
