@@ -1,13 +1,12 @@
 {
-  "id": "chatgpt-test-dallas-3-20260820",
-  "action": "find_leads",
+  "id": "chatgpt-test-gear-20260820-2",
+  "action": "research_products",
   "payload": {
-    "location": "Dallas, TX",
-    "limit": 3,
-    "radius_m": 12000
+    "query": "Find 3 good phones and 3 good smart glasses to add to J",
+    "limit_each": 3
   },
   "display": {
     "source": "chatgpt",
-    "label": "Scan Dallas for 3 businesses"
+    "label": "Find 3 good phones and 3 smart glasses to add to J"
   }
 }
