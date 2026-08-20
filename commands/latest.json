@@ -1,11 +1,11 @@
 {
-  "id": "chatgpt-mac-agent-speed-test-20260820-1",
+  "id": "chatgpt-mac-agent-ai-video-20260820-1",
   "action": "open_url",
   "payload": {
-    "url": "https://www.google.com/search?q=best+smart+glasses+for+AI+assistant+2026"
+    "url": "https://www.youtube.com/watch?v=Tm1_KHdh_kA"
   },
   "display": {
     "source": "chatgpt",
-    "label": "SPEED TEST: Smart glasses search"
+    "label": "OPEN ON MAC: AI computer-use browser automation video"
   }
 }
