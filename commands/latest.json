@@ -1,6 +1,13 @@
 {
-  "id": "init-vision-bridge",
-  "action": "status",
-  "payload": {},
-  "display": {"source": "chatgpt", "label": "Remote bridge initialized"}
+  "id": "chatgpt-test-dallas-3-20260820",
+  "action": "find_leads",
+  "payload": {
+    "location": "Dallas, TX",
+    "limit": 3,
+    "radius_m": 12000
+  },
+  "display": {
+    "source": "chatgpt",
+    "label": "Scan Dallas for 3 businesses"
+  }
 }
