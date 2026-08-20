@@ -1,0 +1,32 @@
+name: J Remote Command Bridge
+
+on:
+  push:
+    branches: [feature/j-vision-screen]
+    paths:
+      - 'commands/latest.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  process-command:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/j-vision-screen
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Process J command
+        run: python scripts/process_j_command.py
+      - name: Save J results
+        run: |
+          git config user.name "J Command Bridge"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/latest-command-result.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "J: save remote command result [skip ci]"
+          git push origin HEAD:feature/j-vision-screen
