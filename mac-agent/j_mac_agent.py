@@ -12,7 +12,7 @@ COMMAND_URL = os.environ.get(
     "J_COMMAND_URL",
     "https://raw.githubusercontent.com/dstinnett587-jpg/jarvisv7/feature/j-vision-screen/commands/latest.json",
 )
-POLL_SECONDS = float(os.environ.get("J_POLL_SECONDS", "2.5"))
+POLL_SECONDS = float(os.environ.get("J_POLL_SECONDS", "0.75"))
 STATE_DIR = Path.home() / ".j-mac-agent"
 STATE_FILE = STATE_DIR / "state.json"
 LOG_FILE = STATE_DIR / "agent.log"
@@ -29,10 +29,8 @@ SAFE_APPS = {
     "System Settings",
 }
 
-# These actions always require a local confirmation prompt on the Mac.
 APPROVAL_ACTIONS = {"type_text", "run_shortcut", "quit_app"}
 
-# These actions are intentionally unsupported by this first agent.
 BLOCKED_ACTIONS = {
     "delete_file",
     "empty_trash",
@@ -68,9 +66,13 @@ def save_state(state):
 def fetch_command():
     req = urllib.request.Request(
         COMMAND_URL + ("&" if "?" in COMMAND_URL else "?") + f"t={int(time.time()*1000)}",
-        headers={"User-Agent": "JMacAgent/1.0", "Cache-Control": "no-cache"},
+        headers={
+            "User-Agent": "JMacAgent/1.1",
+            "Cache-Control": "no-cache, no-store, max-age=0",
+            "Pragma": "no-cache",
+        },
     )
-    with urllib.request.urlopen(req, timeout=15) as r:
+    with urllib.request.urlopen(req, timeout=8) as r:
         return json.loads(r.read().decode("utf-8"))
 
 
@@ -161,7 +163,6 @@ def handle(cmd: dict):
     elif action == "run_shortcut":
         run_shortcut(str(p.get("name") or ""))
     elif action in {"show_results", "find_leads", "scan_map", "status"}:
-        # Web-J handles these; the local agent only needs to acknowledge them.
         return
     else:
         raise ValueError(f"Unsupported Mac action: {action}")
@@ -176,7 +177,7 @@ def main():
 
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     state = load_state()
-    log("J Mac Agent online")
+    log(f"J Mac Agent online · poll={POLL_SECONDS}s")
     notify("J · Mac Agent", "Online and waiting for commands")
 
     while True:
@@ -184,7 +185,6 @@ def main():
             cmd = fetch_command()
             cid = str(cmd.get("id") or "")
             if cid and cid != state.get("last_id"):
-                # Record before execution so a failing command does not loop forever.
                 state["last_id"] = cid
                 save_state(state)
                 try:
