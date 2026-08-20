@@ -1,6 +1,10 @@
 {
-  "id": "setup-001",
-  "action": "status",
-  "payload": {},
-  "created_at": "2026-08-20T06:20:00Z"
+  "id": "dallas-leads-20260820-0112",
+  "action": "find_leads",
+  "payload": {
+    "location": "Dallas, TX",
+    "limit": 20,
+    "radius_m": 8047
+  },
+  "created_at": "2026-08-20T06:22:00Z"
 }
