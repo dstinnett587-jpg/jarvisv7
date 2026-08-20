@@ -1,0 +1,196 @@
+{
+  "command_id": "dallas-leads-20260820-0112",
+  "action": "find_leads",
+  "status": "complete",
+  "completed_at": "2026-08-20T06:43:49.828691+00:00",
+  "location": "Dallas, Dallas County, Texas, United States",
+  "center": {
+    "latitude": 32.7762719,
+    "longitude": -96.7968559
+  },
+  "radius_m": 8047,
+  "provider": "https://overpass-api.de/api/interpreter",
+  "count": 20,
+  "leads": [
+    {
+      "name": "Urban Outfitters",
+      "category": "clothes",
+      "phone": null,
+      "address": null,
+      "latitude": 32.8379133,
+      "longitude": -96.7759604,
+      "reason": "No website is listed in the public OpenStreetMap business data. Verify before outreach."
+    },
+    {
+      "name": "Forney Avenue Church",
+      "category": "place_of_worship",
+      "phone": null,
+      "address": null,
+      "latitude": 32.7873509,
+      "longitude": -96.7372214,
+      "reason": "No website is listed in the public OpenStreetMap business data. Verify before outreach."
+    },
+    {
+      "name": "Holy Trinity School",
+      "category": "school",
+      "phone": null,
+      "address": null,
+      "latitude": 32.8154201,
+      "longitude": -96.8027731,
+      "reason": "No website is listed in the public OpenStreetMap business data. Verify before outreach."
+    },
+    {
+      "name": "Turtle Creek Village",
+      "category": "mall",
+      "phone": null,
+      "address": null,
+      "latitude": 32.8154561,
+      "longitude": -96.8012625,
+      "reason": "No website is listed in the public OpenStreetMap business data. Verify before outreach."
+    },
+    {
+      "name": "Overhill Church",
+      "category": "place_of_worship",
+      "phone": null,
+      "address": null,
+      "latitude": 32.7064629,
+      "longitude": -96.7943334,
+      "reason": "No website is listed in the public OpenStreetMap business data. Verify before outreach."
+    },
+    {
+      "name": "Pilot Institute for the Deaf",
+      "category": "school",
+      "phone": null,
+      "address": null,
+      "latitude": 32.8190169,
+      "longitude": -96.8219463,
+      "reason": "No website is listed in the public OpenStreetMap business data. Verify before outreach."
+    },
+    {
+      "name": "Sacred Heart School",
+      "category": "school",
+      "phone": null,
+      "address": null,
+      "latitude": 32.7890178,
+      "longitude": -96.7975012,
+      "reason": "No website is listed in the public OpenStreetMap business data. Verify before outreach."
+    },
+    {
+      "name": "Saint Cecilia School",
+      "category": "school",
+      "phone": null,
+      "address": null,
+      "latitude": 32.7503135,
+      "longitude": -96.8486982,
+      "reason": "No website is listed in the public OpenStreetMap business data. Verify before outreach."
+    },
+    {
+      "name": "Saint James School",
+      "category": "school",
+      "phone": null,
+      "address": null,
+      "latitude": 32.7129093,
+      "longitude": -96.8097232,
+      "reason": "No website is listed in the public OpenStreetMap business data. Verify before outreach."
+    },
+    {
+      "name": "New Horizon Missionary Baptist Church",
+      "category": "place_of_worship",
+      "phone": null,
+      "address": null,
+      "latitude": 32.7520744,
+      "longitude": -96.7591669,
+      "reason": "No website is listed in the public OpenStreetMap business data. Verify before outreach."
+    },
+    {
+      "name": "Liberty Baptist Church",
+      "category": "place_of_worship",
+      "phone": null,
+      "address": null,
+      "latitude": 32.746797,
+      "longitude": -96.7997235,
+      "reason": "No website is listed in the public OpenStreetMap business data. Verify before outreach."
+    },
+    {
+      "name": "Metropolitan Tabernacle Baptist Church",
+      "category": "place_of_worship",
+      "phone": null,
+      "address": null,
+      "latitude": 32.7211046,
+      "longitude": -96.8094966,
+      "reason": "No website is listed in the public OpenStreetMap business data. Verify before outreach."
+    },
+    {
+      "name": "Kessler Park Baptist Church",
+      "category": "place_of_worship",
+      "phone": null,
+      "address": null,
+      "latitude": 32.7587794,
+      "longitude": -96.8394011,
+      "reason": "No website is listed in the public OpenStreetMap business data. Verify before outreach."
+    },
+    {
+      "name": "Grand Central Missionary Baptist Church",
+      "category": "place_of_worship",
+      "phone": null,
+      "address": null,
+      "latitude": 32.7404081,
+      "longitude": -96.7530555,
+      "reason": "No website is listed in the public OpenStreetMap business data. Verify before outreach."
+    },
+    {
+      "name": "Bread of Life Primative Baptist Church",
+      "category": "place_of_worship",
+      "phone": null,
+      "address": null,
+      "latitude": 32.741797,
+      "longitude": -96.7533333,
+      "reason": "No website is listed in the public OpenStreetMap business data. Verify before outreach."
+    },
+    {
+      "name": "Overton Road Holy Trinity Church of God in Christ",
+      "category": "place_of_worship",
+      "phone": null,
+      "address": null,
+      "latitude": 32.7049805,
+      "longitude": -96.7982184,
+      "reason": "No website is listed in the public OpenStreetMap business data. Verify before outreach."
+    },
+    {
+      "name": "Rejoicing Tabernacle Church of God in Christ",
+      "category": "place_of_worship",
+      "phone": null,
+      "address": null,
+      "latitude": 32.7156868,
+      "longitude": -96.7633331,
+      "reason": "No website is listed in the public OpenStreetMap business data. Verify before outreach."
+    },
+    {
+      "name": "Saintsville Church of God in Christ",
+      "category": "place_of_worship",
+      "phone": null,
+      "address": null,
+      "latitude": 32.7212088,
+      "longitude": -96.8141292,
+      "reason": "No website is listed in the public OpenStreetMap business data. Verify before outreach."
+    },
+    {
+      "name": "El Bethel Church of God in Christ",
+      "category": "place_of_worship",
+      "phone": null,
+      "address": null,
+      "latitude": 32.7084649,
+      "longitude": -96.790556,
+      "reason": "No website is listed in the public OpenStreetMap business data. Verify before outreach."
+    },
+    {
+      "name": "Evangelist Temple Church of God in Christ",
+      "category": "place_of_worship",
+      "phone": null,
+      "address": null,
+      "latitude": 32.7426303,
+      "longitude": -96.7524999,
+      "reason": "No website is listed in the public OpenStreetMap business data. Verify before outreach."
+    }
+  ]
+}
