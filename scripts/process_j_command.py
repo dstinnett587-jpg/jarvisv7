@@ -47,13 +47,19 @@ def main():
     try:
         action=cmd.get('action')
         p=cmd.get('payload') or {}
-        if action=='status': result['message']='J remote command bridge is online.'
+        if action=='status':
+            result['message']='J remote command bridge is online.'
         elif action in ('find_leads','scan_map'):
             place=str(p.get('location') or 'Dallas, TX')[:120]
             limit=max(1,min(int(p.get('limit') or 10),50)); radius=max(1609,min(int(p.get('radius_m') or 12000),30000))
             lat,lon,label=geocode(place); leads,provider=scan(lat,lon,radius,limit)
             result.update({'title':f'J · {label.upper()} SCAN','location':label,'center':{'latitude':lat,'longitude':lon},'radius_m':radius,'provider':provider,'count':len(leads),'leads':leads})
-        else: raise RuntimeError('Unsupported command')
+        elif action=='show_results':
+            items=p.get('items') or []
+            if not isinstance(items,list): raise RuntimeError('Invalid result items')
+            result.update({'title':str(p.get('title') or 'J · REMOTE RESEARCH')[:120],'message':str(p.get('message') or 'Remote research complete.')[:500],'count':len(items),'items':items[:20]})
+        else:
+            raise RuntimeError('Unsupported command')
     except Exception as e:
         result={'command_id':cmd.get('id'),'action':cmd.get('action'),'status':'failed','completed_at':now,'error':str(e),'display':cmd.get('display') or {}}
     OUT.write_text(json.dumps(result,indent=2,ensure_ascii=False)+'\n')
