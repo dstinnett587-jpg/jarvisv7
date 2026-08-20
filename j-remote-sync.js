@@ -16,6 +16,8 @@
     if(d.status==='failed'){body.innerHTML=`<div class="jRemoteLead"><b>ERROR</b><small>${esc(d.error||'Unknown error')}</small></div>`;return;}
     if(Array.isArray(d.leads)){
       body.innerHTML=`<div class="jRemoteLead"><b>${esc(d.title||'J REMOTE SEARCH')}</b><small>${esc(d.location||'')} · ${d.count||d.leads.length} results</small></div>`+d.leads.map((x,i)=>`<div class="jRemoteLead"><b>${i+1}. ${esc(x.name)}</b><small>${esc(String(x.category||'business').replaceAll('_',' '))}${x.address?' · '+esc(x.address):''}${x.phone?' · '+esc(x.phone):''}${x.website?' · website listed':''}</small></div>`).join('');
+    } else if(Array.isArray(d.items)){
+      body.innerHTML=`<div class="jRemoteLead"><b>${esc(d.title||'J REMOTE RESEARCH')}</b><small>${esc(d.message||'')} · ${d.count||d.items.length} results</small></div>`+d.items.map((x,i)=>`<div class="jRemoteLead"><b>${i+1}. ${esc(x.name||x.title||'Result')}</b><small>${esc(x.type||x.category||'')}${x.reason?' · '+esc(x.reason):''}${x.note?' · '+esc(x.note):''}</small></div>`).join('');
     } else body.innerHTML=`<div class="jRemoteLead"><b>${esc(d.message||'J remote bridge online')}</b></div>`;
     window.JSafety?.log?.('remote-command',`${d.action||'task'} ${d.status||''}`);
   }
@@ -23,7 +25,7 @@
     if(!polling)return;
     try{
       const r=await fetch(SOURCE+'?t='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('sync unavailable');const d=await r.json();
-      if(d.command_id&&d.command_id!==lastId){lastId=d.command_id;show(d);if(d.status==='complete'&&Array.isArray(d.leads))window.speak?.(`Remote task complete. I found ${d.leads.length} results.`,{continueConversation:false});}
+      if(d.command_id&&d.command_id!==lastId){lastId=d.command_id;show(d);if(d.status==='complete'){const n=Array.isArray(d.leads)?d.leads.length:Array.isArray(d.items)?d.items.length:0;if(n)window.speak?.(`Remote task complete. I found ${n} results.`,{continueConversation:false});}}
     }catch(e){console.warn('J remote sync',e)}
     setTimeout(poll,5000);
   }
