@@ -9,6 +9,7 @@
   function open(){car.classList.add('open');window.JSafety?.log?.('car-mode','Car mode opened')}
   function close(){car.classList.remove('open')}
   car.querySelector('[data-jcar-close]').onclick=close;
-  car.addEventListener('click',async e=>{const b=e.target.closest('[data-jcar]');if(!b)return;const a=b.dataset.jcar;if(a==='listen'){await window.speak?.('Car mode ready. What do you need?',{continueConversation:true})}else if(a==='nav'){await window.speak?.('Tell me where you want to go.',{continueConversation:true})}else if(a==='remote'){window.JRemoteSync?.poll?.();await window.speak?.('Checking remote tasks.',{continueConversation:false})}else if(a==='home'){close()}else if(a==='stop'){window.JSafety?.setPaused?.(true);await window.speak?.('J paused.',{continueConversation:false})}else if(a==='screen'){window.JTablet?.open?.('system')}});
+  car.addEventListener('click',async e=>{const b=e.target.closest('[data-jcar]');if(!b)return;const a=b.dataset.jcar;if(a==='listen'){await window.JPhoneAudio?.prepare?.();await window.speak?.('Car mode ready. What do you need?',{continueConversation:true})}else if(a==='nav'){await window.speak?.('Tell me where you want to go.',{continueConversation:true})}else if(a==='remote'){window.JRemoteSync?.poll?.();await window.speak?.('Checking remote tasks.',{continueConversation:false})}else if(a==='home'){close()}else if(a==='stop'){window.JSafety?.setPaused?.(true);await window.speak?.('J paused.',{continueConversation:false})}else if(a==='screen'){window.JTablet?.open?.('system')}});
   window.JCar={open,close};
+  if(!window.JPhoneAudio){const s=document.createElement('script');s.src='./j-phone-audio.js?v=20260820-1';document.body.appendChild(s)}
 })();
