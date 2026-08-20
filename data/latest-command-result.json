@@ -1,30 +1,21 @@
 {
-  "command_id": "chatgpt-mac-screen-test-20260820-1",
+  "command_id": "chatgpt-yt-naruto-sasuke-20260820-1",
   "action": "show_results",
   "status": "complete",
-  "completed_at": "2026-08-20T18:23:40.167284+00:00",
+  "completed_at": "2026-08-20T18:28:12.337774+00:00",
   "display": {
     "source": "chatgpt",
-    "label": "MAC SCREEN TEST: show task and SYSTEM workspace"
+    "label": "YOUTUBE TEST: Naruto vs Sasuke"
   },
-  "title": "J · MAC SCREEN TEST",
-  "message": "Command received from ChatGPT. Display this test on the Mac and open the SYSTEM workspace so we can verify J can control his on-screen interface.",
-  "count": 3,
+  "title": "J · YOUTUBE TEST",
+  "message": "Found an official Naruto vs Sasuke video on YouTube. Open this result on the Mac if link handling is available.",
+  "count": 1,
   "items": [
     {
-      "name": "STEP 1",
-      "type": "Screen test",
-      "reason": "Show this remote task on the Mac."
-    },
-    {
-      "name": "STEP 2",
-      "type": "J interface",
-      "reason": "Open or focus J's SYSTEM workspace."
-    },
-    {
-      "name": "STEP 3",
-      "type": "Verification",
-      "reason": "If this card appears, ChatGPT to J screen delivery is working. Full macOS app/window control still requires the local Mac Agent."
+      "name": "Naruto vs Sasuke: The Final Attack | Naruto Shippuden",
+      "type": "YouTube",
+      "reason": "Official Crunchyroll upload of Naruto vs Sasuke.",
+      "url": "https://www.youtube.com/watch?v=9ty1v5xXcJI"
     }
   ]
 }
