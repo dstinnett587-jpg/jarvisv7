@@ -3,17 +3,9 @@ import jWorker from "../workflows/j-worker.js";
 
 export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
+  if (req.method !== "POST") return res.status(405).json({ ok: false, error: "POST required" });
 
-  let job;
-  if (req.method === "POST") {
-    job = req.body || {};
-  } else if (req.method === "GET") {
-    // Safe test-only trigger: GET can start only a status_check job.
-    job = { type: "status_check", target: "j-cloud-worker" };
-  } else {
-    return res.status(405).json({ ok: false, error: "GET or POST required" });
-  }
-
+  const job = req.body || {};
   const allowed = new Set(["research_lead", "prepare_site", "prepare_followup", "status_check"]);
   if (!allowed.has(job.type)) {
     return res.status(400).json({ ok: false, status: "blocked", error: "This action requires approval or is not supported by the autonomous worker." });
