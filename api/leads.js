@@ -1,4 +1,5 @@
 const OVERPASS_ENDPOINTS=['https://overpass.kumi.systems/api/interpreter','https://overpass-api.de/api/interpreter','https://overpass.nchc.org.tw/api/interpreter'];
+const QUERY_ALIASES={barber:['barber','hairdresser','beauty'],barbers:['barber','hairdresser','beauty'],salon:['salon','hairdresser','beauty'],salons:['salon','hairdresser','beauty'],restaurant:['restaurant','fast_food','cafe','food'],restaurants:['restaurant','fast_food','cafe','food'],plumber:['plumber','plumbing'],plumbers:['plumber','plumbing'],roofer:['roofer','roofing'],roofers:['roofer','roofing'],contractor:['contractor','construction'],contractors:['contractor','construction'],dentist:['dentist','dental'],dentists:['dentist','dental'],gym:['gym','fitness_centre','fitness'],gyms:['gym','fitness_centre','fitness'],store:['shop','retail'],stores:['shop','retail'],shop:['shop','retail'],shops:['shop','retail']};
 
 function clean(value){return String(value??'').trim()}
 function num(value){const n=Number(value);return Number.isFinite(n)?n:null}
@@ -17,17 +18,16 @@ async function geocodeLocation(location){
   return {latitude:num(hit.lat),longitude:num(hit.lon),displayName:hit.display_name||q};
 }
 
-function buildOverpassQuery({latitude,longitude,radius,query}){
-  const q=clean(query).toLowerCase();
-  const safe=q.replace(/["\\]/g,' ').slice(0,80);
-  const nameFilter=safe?`[name~"${safe.replace(/\s+/g,'.*')}",i]`:'';
-  return `[out:json][timeout:18];(nwr(around:${radius},${latitude},${longitude})[name][shop]${nameFilter};nwr(around:${radius},${latitude},${longitude})[name][amenity]${nameFilter};nwr(around:${radius},${latitude},${longitude})[name][craft]${nameFilter};nwr(around:${radius},${latitude},${longitude})[name][office]${nameFilter};nwr(around:${radius},${latitude},${longitude})[name][tourism]${nameFilter};nwr(around:${radius},${latitude},${longitude})[name][healthcare]${nameFilter};);out center tags 120;`;
+function buildOverpassQuery({latitude,longitude,radius}){
+  return `[out:json][timeout:18];(nwr(around:${radius},${latitude},${longitude})[name][shop];nwr(around:${radius},${latitude},${longitude})[name][amenity];nwr(around:${radius},${latitude},${longitude})[name][craft];nwr(around:${radius},${latitude},${longitude})[name][office];nwr(around:${radius},${latitude},${longitude})[name][tourism];nwr(around:${radius},${latitude},${longitude})[name][healthcare];);out center tags 180;`;
 }
 
 function looselyMatches(t={},query=''){
-  const q=clean(query).toLowerCase();if(!q)return true;
-  const hay=[t.name,t.shop,t.amenity,t.craft,t.office,t.tourism,t.healthcare,t.description,t.brand].filter(Boolean).join(' ').toLowerCase();
-  return q.split(/\s+/).filter(Boolean).some(word=>word.length>2&&hay.includes(word));
+  const q=clean(query).toLowerCase();if(!q||q==='local business')return true;
+  const hay=[t.name,t.shop,t.amenity,t.craft,t.office,t.tourism,t.healthcare,t.description,t.brand].filter(Boolean).join(' ').toLowerCase().replaceAll('_',' ');
+  const words=q.split(/\s+/).filter(Boolean);const expanded=new Set(words);
+  for(const word of words)for(const alias of QUERY_ALIASES[word]||[])expanded.add(alias.replaceAll('_',' '));
+  return [...expanded].some(word=>word.length>2&&hay.includes(word));
 }
 
 export default async function handler(req,res){
@@ -44,7 +44,7 @@ export default async function handler(req,res){
     }
     const radius=Math.min(Math.max(Number(req.body?.radius)||12000,1000),30000);
     const limit=Math.min(Math.max(Number(req.body?.limit)||25,1),50);
-    const overpassQuery=buildOverpassQuery({latitude,longitude,radius,query});
+    const overpassQuery=buildOverpassQuery({latitude,longitude,radius});
     let lastError='';
     for(const endpoint of OVERPASS_ENDPOINTS){
       try{
