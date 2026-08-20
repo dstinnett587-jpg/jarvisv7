@@ -1,21 +1,11 @@
 {
-  "command_id": "chatgpt-yt-boruto-replay-20260820-2",
-  "action": "show_results",
-  "status": "complete",
-  "completed_at": "2026-08-20T18:49:20.679417+00:00",
+  "command_id": "chatgpt-mac-agent-boruto-open-20260820-1",
+  "action": "open_url",
+  "status": "failed",
+  "completed_at": "2026-08-20T18:53:44.231724+00:00",
+  "error": "Unsupported command",
   "display": {
     "source": "chatgpt",
-    "label": "PLAY ON MAC: Boruto Two Blue Vortex"
-  },
-  "title": "J · NOW PLAYING",
-  "message": "BORUTO -TWO BLUE VORTEX- | OFFICIAL MANGA VIDEO",
-  "count": 1,
-  "items": [
-    {
-      "name": "BORUTO -TWO BLUE VORTEX- | OFFICIAL MANGA VIDEO",
-      "type": "YouTube · MANGA Plus by SHUEISHA",
-      "reason": "Replay the Boruto Two Blue Vortex video on J's Mac screen."
-    }
-  ],
-  "video_url": "https://www.youtube.com/embed/9L2bRn9by0I"
+    "label": "OPEN ON MAC: Boruto Two Blue Vortex"
+  }
 }
