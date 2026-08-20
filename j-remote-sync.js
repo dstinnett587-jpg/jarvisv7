@@ -2,8 +2,9 @@
   let lastId='';
   let polling=true;
   const SOURCE='https://raw.githubusercontent.com/dstinnett587-jpg/jarvisv7/feature/j-vision-screen/data/latest-command-result.json';
+  const MAC_ACTIONS=new Set(['open_url','open_app','focus_app','type_text','quit_app','run_shortcut']);
   const style=document.createElement('style');
-  style.textContent=`.jRemoteCard{position:fixed;z-index:70;left:18px;bottom:120px;width:min(560px,calc(100vw - 36px));max-height:68vh;overflow:auto;border:1px solid #ffffff28;border-radius:18px;background:#080808ef;color:#fff;padding:14px;backdrop-filter:blur(18px);display:none}.jRemoteCard.open{display:block}.jRemoteHead{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px}.jRemoteHead b{font-size:10px;letter-spacing:.13em}.jRemoteHead button,.jRemoteOpen{border:1px solid #ffffff25;background:#121212;color:#fff;border-radius:999px;padding:9px 12px;text-decoration:none;display:inline-block;font-size:10px;font-weight:800;margin-top:10px}.jRemoteStatus{font-size:11px;color:#aaa;margin-bottom:10px}.jRemoteLead{padding:10px 0;border-bottom:1px solid #ffffff12}.jRemoteLead b{font-size:11px}.jRemoteLead small{display:block;color:#999;margin-top:4px;line-height:1.45}.jRemoteVideo{width:100%;aspect-ratio:16/9;border:0;border-radius:14px;background:#000;margin-top:10px}`;
+  style.textContent=`.jRemoteCard{position:fixed;z-index:70;left:18px;bottom:120px;width:min(560px,calc(100vw - 36px));max-height:68vh;overflow:auto;border:1px solid #ffffff28;border-radius:18px;background:#080808ef;color:#fff;padding:14px;backdrop-filter:blur(18px);display:none}.jRemoteCard.open{display:block}.jRemoteHead{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:10px}.jRemoteHead b{font-size:10px;letter-spacing:.13em}.jRemoteHead button,.jRemoteOpen{border:1px solid #ffffff25;background:#121212;color:#fff;border-radius:999px;padding:9px 12px;text-decoration:none;display:inline-block;font-size:10px;font-weight:800;margin-top:10px;cursor:pointer}.jRemoteStatus{font-size:11px;color:#aaa;margin-bottom:10px}.jRemoteLead{padding:10px 0;border-bottom:1px solid #ffffff12}.jRemoteLead b{font-size:11px}.jRemoteLead small{display:block;color:#999;margin-top:4px;line-height:1.45}.jRemoteVideo{width:100%;aspect-ratio:16/9;border:0;border-radius:14px;background:#000;margin-top:10px}`;
   document.head.appendChild(style);
   const card=document.createElement('section');card.className='jRemoteCard';card.innerHTML='<div class="jRemoteHead"><b>J · REMOTE TASK</b><button type="button">×</button></div><div class="jRemoteStatus">Waiting for command…</div><div class="jRemoteBody"></div>';
   document.body.appendChild(card);
@@ -14,8 +15,17 @@
   function openNewTab(url){try{const w=window.open(url,'_blank','noopener,noreferrer');return !!w}catch{return false}}
   function show(d){
     card.classList.add('open');
+    if(MAC_ACTIONS.has(d.action)){
+      status.textContent=d.status==='failed'?'Sent to Mac Agent':'Mac Agent command';
+      body.innerHTML=`<div class="jRemoteLead"><b>J · MAC AGENT</b><small>${esc(d.display?.label||d.message||'Command sent to Mac.')}</small></div>`;
+      return;
+    }
     status.textContent=d.status==='failed'?'Remote task failed':d.status==='complete'?'Remote task complete':'Remote task running';
-    if(d.status==='failed'){body.innerHTML=`<div class="jRemoteLead"><b>ERROR</b><small>${esc(d.error||'Unknown error')}</small></div>`;return;}
+    if(d.status==='failed'){
+      const unsupported=/unsupported command/i.test(String(d.error||''));
+      if(unsupported){status.textContent='Sent to Mac Agent';body.innerHTML='<div class="jRemoteLead"><b>J · MAC AGENT</b><small>This action is handled locally on your Mac.</small></div>';return;}
+      body.innerHTML=`<div class="jRemoteLead"><b>ERROR</b><small>${esc(d.error||'Unknown error')}</small></div>`;return;
+    }
     let html='';
     if(Array.isArray(d.leads)){
       html=`<div class="jRemoteLead"><b>${esc(d.title||'J REMOTE SEARCH')}</b><small>${esc(d.location||'')} · ${d.count||d.leads.length} results</small></div>`+d.leads.map((x,i)=>`<div class="jRemoteLead"><b>${i+1}. ${esc(x.name)}</b><small>${esc(String(x.category||'business').replaceAll('_',' '))}${x.address?' · '+esc(x.address):''}${x.phone?' · '+esc(x.phone):''}${x.website?' · website listed':''}</small></div>`).join('');
@@ -31,10 +41,10 @@
   async function poll(){
     if(!polling)return;
     try{
-      const r=await fetch(SOURCE+'?t='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('sync unavailable');const d=await r.json();
+      const r=await fetch(SOURCE+'?t='+Date.now(),{cache:'no-store',headers:{'Cache-Control':'no-cache'}});if(!r.ok)throw new Error('sync unavailable');const d=await r.json();
       if(d.command_id&&d.command_id!==lastId){lastId=d.command_id;show(d);if(d.status==='complete'){const n=Array.isArray(d.leads)?d.leads.length:Array.isArray(d.items)?d.items.length:0;if(n)window.speak?.(`Remote task complete. I found ${n} results.`,{continueConversation:false});}}
     }catch(e){console.warn('J remote sync',e)}
-    setTimeout(poll,5000);
+    setTimeout(poll,1000);
   }
   window.JRemoteSync={show,poll,stop(){polling=false},start(){if(polling)return;polling=true;poll()}};
   poll();
