@@ -1,1 +1,1 @@
-{"private":true,"name":"jarvis-v7","version":"1.0.0","dependencies":{"workflow":"latest"}}
+{"private":true,"name":"jarvis-v7","version":"1.0.0","type":"module","dependencies":{"workflow":"latest"}}
