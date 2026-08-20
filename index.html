@@ -6,34 +6,26 @@
 <meta name="theme-color" content="#000000">
 <title>ALFRED</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif}body{user-select:none;-webkit-user-select:none;background:radial-gradient(circle at 50% 44%,#151515 0,#070707 34%,#000 72%)}
-.stage{position:relative;width:100%;height:100%;display:grid;place-items:center;overflow:hidden;cursor:default}.noise{position:absolute;inset:0;opacity:.16;background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);background-size:42px 42px;mask-image:radial-gradient(circle at center,#000 20%,transparent 76%)}
-.ring,.ring:before,.ring:after{position:absolute;border-radius:50%;border:1px solid #ffffff2d}.ring{width:min(84vw,720px);aspect-ratio:1;box-shadow:0 0 80px #ffffff0c,inset 0 0 70px #ffffff08;animation:spin 26s linear infinite}.ring:before,.ring:after{content:"";inset:8%;border-style:dashed}.ring:after{inset:21%;border-style:solid;border-color:#ffffff18}.ring2{position:absolute;width:min(68vw,580px);aspect-ratio:1;border:1px dashed #ffffff2d;border-radius:50%;animation:spinBack 18s linear infinite}
-.faceWrap{position:relative;z-index:3;width:min(55vw,420px);height:min(72vh,560px);display:grid;place-items:center;filter:drop-shadow(0 0 26px #ffffff22)}.faceSvg{width:100%;height:100%;overflow:visible}.wire{fill:none;stroke:#fff;stroke-width:1.2;opacity:.82}.mesh{fill:none;stroke:#ffffff42;stroke-width:.55}.eye{fill:#fff;filter:drop-shadow(0 0 8px #fff) drop-shadow(0 0 20px #fff);transform-origin:center;animation:blink 6.5s infinite}.pulse{animation:facePulse 2.4s ease-in-out infinite}.listening .eye{filter:drop-shadow(0 0 10px #fff) drop-shadow(0 0 28px #fff)}.speaking .faceWrap{animation:talkGlow .7s ease-in-out infinite alternate}.thinking .ring{animation-duration:7s}.thinking .ring2{animation-duration:5s}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif}body{user-select:none;-webkit-user-select:none;background:radial-gradient(circle at 50% 48%,#101010 0,#050505 38%,#000 76%)}
+.stage{position:relative;width:100%;height:100%;display:grid;place-items:center;overflow:hidden}.grain{position:absolute;inset:0;opacity:.12;background-image:radial-gradient(#fff 0.45px,transparent .55px);background-size:7px 7px;mask-image:radial-gradient(circle at center,#000 15%,transparent 75%)}
+.orbWrap{position:relative;z-index:3;width:min(82vw,560px);aspect-ratio:1;display:grid;place-items:center;filter:drop-shadow(0 0 26px #ffffff2c)}#orb{width:100%;height:100%;display:block}.orbHalo{position:absolute;width:72%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#ffffff16 0,#ffffff08 28%,transparent 70%);filter:blur(18px);animation:breathe 4s ease-in-out infinite}
+.listening .orbWrap{filter:drop-shadow(0 0 34px #ffffff48)}.thinking .orbWrap{filter:drop-shadow(0 0 42px #ffffff60)}.speaking .orbWrap{filter:drop-shadow(0 0 50px #ffffff75)}
 .activateBtn{position:absolute;z-index:10;left:50%;bottom:max(28px,env(safe-area-inset-bottom));transform:translateX(-50%);border:1px solid #ffffff55;background:#0b0b0be6;color:#fff;border-radius:999px;padding:12px 20px;font:600 13px/1 -apple-system,BlinkMacSystemFont,"SF Pro Display",sans-serif;letter-spacing:.08em;text-transform:uppercase;box-shadow:0 0 24px #ffffff18;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:opacity .25s ease,transform .25s ease}.activateBtn:active{transform:translateX(-50%) scale(.97)}.activateBtn.hidden{opacity:0;pointer-events:none;transform:translateX(-50%) translateY(10px)}
 #status,#response,#hint{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;opacity:0;pointer-events:none}
-@keyframes spin{to{transform:rotate(360deg)}}@keyframes spinBack{to{transform:rotate(-360deg)}}@keyframes facePulse{50%{opacity:.62}}@keyframes blink{0%,45%,47%,100%{transform:scaleY(1)}46%{transform:scaleY(.08)}}@keyframes talkGlow{from{filter:drop-shadow(0 0 18px #ffffff1f)}to{filter:drop-shadow(0 0 42px #ffffff62)}}
-@media(max-width:640px){.ring{width:112vw}.ring2{width:88vw}.faceWrap{width:78vw;height:58vh}.activateBtn{bottom:max(22px,env(safe-area-inset-bottom));padding:12px 18px;font-size:12px}}
+@keyframes breathe{0%,100%{transform:scale(.92);opacity:.65}50%{transform:scale(1.08);opacity:1}}
+@media(max-width:640px){.orbWrap{width:92vw}.activateBtn{bottom:max(22px,env(safe-area-inset-bottom));padding:12px 18px;font-size:12px}}
 </style>
 </head>
 <body>
 <main class="stage" id="stage" aria-label="ALFRED voice interface">
-  <div class="noise"></div><div class="ring"></div><div class="ring2"></div>
-  <div class="faceWrap">
-    <svg class="faceSvg" viewBox="0 0 400 520" aria-hidden="true">
-      <path class="wire" d="M200 42 C126 42 76 100 70 190 C64 286 101 408 200 472 C299 408 336 286 330 190 C324 100 274 42 200 42Z"/>
-      <path class="mesh" d="M102 122 Q200 82 298 122 M82 188 Q200 145 318 188 M78 250 Q200 217 322 250 M91 316 Q200 294 309 316 M121 382 Q200 370 279 382"/>
-      <path class="mesh" d="M200 48 C170 125 166 210 200 465 M139 62 C122 153 132 280 176 450 M261 62 C278 153 268 280 224 450 M94 115 C108 224 132 342 168 438 M306 115 C292 224 268 342 232 438"/>
-      <path class="wire" d="M112 202 Q143 181 171 203 Q142 221 112 202Z"/><path class="wire" d="M229 203 Q257 181 288 202 Q258 221 229 203Z"/>
-      <ellipse class="eye" cx="143" cy="203" rx="11" ry="5"/><ellipse class="eye" cx="257" cy="203" rx="11" ry="5"/>
-      <path class="wire" d="M200 205 C188 248 181 280 198 298 C210 300 221 298 229 294"/>
-      <path class="wire" d="M157 340 Q200 358 243 340 M169 350 Q200 363 231 350"/>
-      <path class="mesh pulse" d="M92 155 L307 366 M308 155 L93 366 M116 91 L284 430 M284 91 L116 430"/>
-    </svg>
-  </div>
+  <div class="grain"></div>
+  <div class="orbWrap"><div class="orbHalo"></div><canvas id="orb" width="600" height="600" aria-hidden="true"></canvas></div>
   <button class="activateBtn" id="activateBtn" type="button">Start Alfred</button>
   <div id="response"></div><div id="status"></div><div id="hint"></div>
 </main>
+<script>
+(()=>{const canvas=document.getElementById('orb'),ctx=canvas.getContext('2d'),stage=document.getElementById('stage');let w=600,h=600,t=0;const pts=[];const count=320;for(let i=0;i<count;i++){const u=Math.random(),v=Math.random(),theta=2*Math.PI*u,phi=Math.acos(2*v-1),r=.72+Math.random()*.28;pts.push({x:r*Math.sin(phi)*Math.cos(theta),y:r*Math.sin(phi)*Math.sin(theta),z:r*Math.cos(phi),s:.5+Math.random()*1.5,p:Math.random()*Math.PI*2})}function resize(){const d=Math.min(devicePixelRatio||1,2),size=Math.max(320,Math.floor(canvas.clientWidth*d));canvas.width=size;canvas.height=size;w=h=size}new ResizeObserver(resize).observe(canvas);resize();function frame(){requestAnimationFrame(frame);t+=.012;ctx.clearRect(0,0,w,h);const listening=stage.classList.contains('listening'),thinking=stage.classList.contains('thinking'),speaking=stage.classList.contains('speaking');const speed=thinking?2.4:listening?1.45:speaking?1.8:1;const pulse=1+(speaking?.07:listening?.045:.025)*Math.sin(t*(speaking?9:listening?5:2.5));const rot=t*.48*speed,cr=Math.cos(rot),sr=Math.sin(rot),tilt=.36+Math.sin(t*.33)*.08,ct=Math.cos(tilt),st=Math.sin(tilt);const cx=w/2,cy=h/2,scale=w*.29*pulse;const draw=[];for(const q of pts){let x=q.x*cr-q.z*sr,z=q.x*sr+q.z*cr,y=q.y;const yy=y*ct-z*st,zz=y*st+z*ct;const wobble=(thinking?.055:listening?.032:speaking?.045:.018)*Math.sin(t*3+q.p);x*=1+wobble;y=yy*(1-wobble*.45);z=zz;const depth=(z+1.25)/2.5;draw.push({x:cx+x*scale*(.8+.25*depth),y:cy+y*scale*(.8+.25*depth),z,depth,s:q.s})}draw.sort((a,b)=>a.z-b.z);for(const p of draw){const a=.18+.82*p.depth,rad=(.65+p.s*1.05)*(thinking?1.15:speaking?1.2:1);ctx.beginPath();ctx.fillStyle=`rgba(255,255,255,${a})`;ctx.shadowColor='rgba(255,255,255,.8)';ctx.shadowBlur=(speaking?12:listening?8:5)*p.depth;ctx.arc(p.x,p.y,rad,0,Math.PI*2);ctx.fill()}ctx.shadowBlur=0}frame()})();
+</script>
 <script src="./app.js"></script>
 </body>
 </html>
