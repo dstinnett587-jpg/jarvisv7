@@ -1,21 +1,21 @@
 {
-  "command_id": "chatgpt-yt-naruto-sasuke-20260820-1",
+  "command_id": "chatgpt-yt-naruto-sasuke-screen-20260820-2",
   "action": "show_results",
   "status": "complete",
-  "completed_at": "2026-08-20T18:28:12.337774+00:00",
+  "completed_at": "2026-08-20T18:29:35.564889+00:00",
   "display": {
     "source": "chatgpt",
-    "label": "YOUTUBE TEST: Naruto vs Sasuke"
+    "label": "PLAY ON MAC: Naruto vs Sasuke"
   },
-  "title": "J · YOUTUBE TEST",
-  "message": "Found an official Naruto vs Sasuke video on YouTube. Open this result on the Mac if link handling is available.",
+  "title": "J · NOW PLAYING",
+  "message": "Naruto vs Sasuke: The Final Attack | Naruto Shippuden",
   "count": 1,
   "items": [
     {
       "name": "Naruto vs Sasuke: The Final Attack | Naruto Shippuden",
       "type": "YouTube",
-      "reason": "Official Crunchyroll upload of Naruto vs Sasuke.",
-      "url": "https://www.youtube.com/watch?v=9ty1v5xXcJI"
+      "reason": "Show this video directly inside J on the Mac screen."
     }
-  ]
+  ],
+  "video_url": "https://www.youtube.com/embed/9ty1v5xXcJI"
 }
