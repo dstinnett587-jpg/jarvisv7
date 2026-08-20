@@ -1,11 +1,11 @@
 {
-  "id": "chatgpt-mac-agent-search-test-20260820-2",
+  "id": "chatgpt-mac-agent-speed-test-20260820-1",
   "action": "open_url",
   "payload": {
-    "url": "https://www.google.com/search?q=best+barbers+in+Dallas+TX"
+    "url": "https://www.google.com/search?q=best+smart+glasses+for+AI+assistant+2026"
   },
   "display": {
     "source": "chatgpt",
-    "label": "OPEN ON MAC: Best barbers in Dallas — retry"
+    "label": "SPEED TEST: Smart glasses search"
   }
 }
