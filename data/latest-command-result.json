@@ -1,11 +1,11 @@
 {
-  "command_id": "chatgpt-mac-agent-boruto-open-20260820-1",
+  "command_id": "chatgpt-mac-agent-search-test-20260820-1",
   "action": "open_url",
   "status": "failed",
-  "completed_at": "2026-08-20T18:53:44.231724+00:00",
+  "completed_at": "2026-08-20T18:56:34.154754+00:00",
   "error": "Unsupported command",
   "display": {
     "source": "chatgpt",
-    "label": "OPEN ON MAC: Boruto Two Blue Vortex"
+    "label": "OPEN ON MAC: Best barbers in Dallas"
   }
 }
