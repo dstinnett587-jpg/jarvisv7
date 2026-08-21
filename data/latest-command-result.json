@@ -1,11 +1,11 @@
 {
-  "command_id": "chatgpt-mac-agent-ai-video-20260820-1",
+  "command_id": "chatgpt-mac-naruto-sasuke-20260820-2026",
   "action": "open_url",
   "status": "failed",
-  "completed_at": "2026-08-20T19:33:50.922479+00:00",
+  "completed_at": "2026-08-21T01:27:21.424041+00:00",
   "error": "Unsupported command",
   "display": {
     "source": "chatgpt",
-    "label": "OPEN ON MAC: AI computer-use browser automation video"
+    "label": "OPEN ON MAC: Naruto vs Sasuke YouTube"
   }
 }
