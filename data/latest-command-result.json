@@ -1,14 +1,13 @@
 {
-  "command_id": "chatgpt-j-full-test-20260821-001",
-  "action": "open_url",
+  "command_id": "chatgpt-j-full-test-20260821-002",
+  "action": "media_play_pause",
   "status": "complete",
-  "completed_at": "2026-08-21T22:52:13.731672+00:00",
+  "completed_at": "2026-08-21T22:53:32.094624+00:00",
   "display": {
     "source": "chatgpt",
-    "label": "FULL TEST 1: Open Naruto search"
+    "label": "FULL TEST 2: Play/Pause"
   },
-  "title": "FULL TEST 1: Open Naruto search",
-  "message": "Remote URL command ready for J Mac Agent.",
-  "url": "https://www.youtube.com/results?search_query=naruto",
-  "open_url": "https://www.youtube.com/results?search_query=naruto"
+  "title": "FULL TEST 2: Play/Pause",
+  "message": "Remote Mac control command ready for J Mac Agent.",
+  "payload": {}
 }
