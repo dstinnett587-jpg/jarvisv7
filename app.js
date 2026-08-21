@@ -94,5 +94,5 @@ async function activate(){if(activated)return;if(!navigator.mediaDevices?.getUse
 if('speechSynthesis'in window)speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices();
 if(activateBtn)activateBtn.addEventListener('click',activate);
 window.addEventListener('load',()=>setStatus('READY'));
-document.addEventListener('visibilitychange',()=>{if(document.hidden)stopRecording();else if(activated&&!isAsking&&!isSpeaking)startAudioLoop(220)});
+document.addEventListener('visibilitychange',()=>{if(activated&&!isAsking&&!isSpeaking&&!processingAudio)startAudioLoop(120)});
 window.ask=ask;window.speak=speak;window.activateJ=activate;window.JConversation={start:activate,ask,speak,get active(){return activated}};
