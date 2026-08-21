@@ -4,8 +4,9 @@
     const raw=String(text||'').trim();
     const t=raw.toLowerCase();
     const action=/\b(pull up|put on|show me|open|find|search(?: for)?|play)\b/.test(t);
-    const video=/\b(youtube|yt|video|videos|tiktok|reel|clip)\b/.test(t);
-    if(!action||!video)return null;
+    const explicitVideo=/\b(youtube|yt|video|videos|tiktok|reel|clip)\b/.test(t);
+    const implicitPlay=/\bplay\b/.test(t)&&raw.replace(/^\s*(?:hey\s+)?(?:j|jay|jarvis)\s*[,.:;-]?\s*/i,'').replace(/\bplay\b/i,'').trim().length>0;
+    if(!action||(!explicitVideo&&!implicitPlay))return null;
     const explicitUrl=(raw.match(/https?:\/\/[^\s]+/i)||[])[0]||null;
     let q=raw
       .replace(/^\s*(?:hey\s+)?(?:j|jay|jarvis)\s*[,.:;-]?\s*/i,'')
@@ -16,7 +17,7 @@
       .replace(/\b(?:a|the)\s+(?:youtube|yt|tiktok)?\s*videos?\s*(?:of|about|for|on)?\b/ig,'')
       .replace(/\b(?:youtube|yt|tiktok|reel|clip|videos?)\b/ig,'')
       .replace(/\s+/g,' ').trim();
-    const platform=/\b(?:youtube|yt)\b/i.test(raw)?'youtube':/\btiktok\b/i.test(raw)?'tiktok':'video';
+    const platform=/\b(?:youtube|yt)\b/i.test(raw)?'youtube':/\btiktok\b/i.test(raw)?'tiktok':implicitPlay?'youtube':'video';
     return {query:q||'latest videos',platform,explicitUrl};
   }
   function targetUrl(req){
