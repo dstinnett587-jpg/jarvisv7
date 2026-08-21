@@ -1,11 +1,11 @@
 {
-  "id": "chatgpt-mac-naruto-sasuke-retry-20260820-2202",
-  "action": "open_url",
+  "id": "chatgpt-mac-test-calculator-20260820-2204",
+  "action": "open_app",
   "payload": {
-    "url": "https://www.youtube.com/results?search_query=Naruto+vs+Sasuke+final+battle"
+    "app": "Calculator"
   },
   "display": {
     "source": "chatgpt",
-    "label": "RETRY ON MAC: Naruto vs Sasuke final battle YouTube"
+    "label": "MAC AGENT TEST: Open Calculator"
   }
 }
