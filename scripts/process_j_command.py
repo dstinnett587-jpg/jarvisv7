@@ -6,6 +6,12 @@ CMD=ROOT/'commands'/'latest.json'
 OUT=ROOT/'data'/'latest-command-result.json'
 OUT.parent.mkdir(parents=True,exist_ok=True)
 
+MAC_ACTIONS={
+    'open_url','open_app','focus_app','type_text','quit_app','run_shortcut',
+    'browser_back','browser_forward','browser_reload','browser_address','browser_find',
+    'media_play_pause','escape','click_xy','scroll'
+}
+
 def fetch_json(url,data=None,headers=None,timeout=25):
     req=urllib.request.Request(url,data=data,headers=headers or {})
     with urllib.request.urlopen(req,timeout=timeout) as r:
@@ -62,6 +68,12 @@ def main():
         elif action=='play_video':
             url=safe_url(p.get('url'))
             result.update({'title':str((cmd.get('display') or {}).get('label') or 'J · PLAY VIDEO')[:120],'message':'Remote video command ready for J Mac Agent.','url':url,'open_url':url,'video_url':url})
+        elif action in MAC_ACTIONS:
+            result.update({
+                'title':str((cmd.get('display') or {}).get('label') or f'J · {str(action).upper()}')[:120],
+                'message':'Remote Mac control command ready for J Mac Agent.',
+                'payload':p,
+            })
         elif action in ('find_leads','scan_map'):
             place=str(p.get('location') or 'Dallas, TX')[:120]
             limit=max(1,min(int(p.get('limit') or 10),50)); radius=max(1609,min(int(p.get('radius_m') or 12000),30000))
