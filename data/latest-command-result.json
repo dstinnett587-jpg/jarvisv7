@@ -1,13 +1,15 @@
 {
-  "command_id": "chatgpt-j-full-test-20260821-004",
-  "action": "browser_reload",
+  "command_id": "chatgpt-j-full-test-20260821-005",
+  "action": "focus_app",
   "status": "complete",
-  "completed_at": "2026-08-21T23:00:09.812520+00:00",
+  "completed_at": "2026-08-21T23:02:30.331278+00:00",
   "display": {
     "source": "chatgpt",
-    "label": "FULL TEST 3: Browser Reload"
+    "label": "FULL TEST 3A: Focus Safari"
   },
-  "title": "FULL TEST 3: Browser Reload",
+  "title": "FULL TEST 3A: Focus Safari",
   "message": "Remote Mac control command ready for J Mac Agent.",
-  "payload": {}
+  "payload": {
+    "app": "Safari"
+  }
 }
