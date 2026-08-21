@@ -1,11 +1,11 @@
 {
-  "command_id": "chatgpt-j-open-youtube-20260820-2206",
+  "command_id": "chatgpt-j-open-youtube-after-reinstall-20260820-2230",
   "action": "open_url",
   "status": "failed",
-  "completed_at": "2026-08-21T03:14:46.746498+00:00",
+  "completed_at": "2026-08-21T03:28:08.803659+00:00",
   "error": "Unsupported command",
   "display": {
     "source": "chatgpt",
-    "label": "J: OPEN YOUTUBE"
+    "label": "POST-REINSTALL TEST: OPEN YOUTUBE"
   }
 }
