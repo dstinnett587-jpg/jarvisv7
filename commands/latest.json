@@ -1,11 +1,9 @@
 {
-  "id": "chatgpt-j-full-test-20260821-003",
-  "action": "open_url",
-  "payload": {
-    "url": "https://www.youtube.com/watch?v=CNWI9lJZ7aw"
-  },
+  "id": "chatgpt-j-full-test-20260821-004",
+  "action": "browser_reload",
+  "payload": {},
   "display": {
     "source": "chatgpt",
-    "label": "FULL TEST 2: Open Naruto's Best Fights video"
+    "label": "FULL TEST 3: Browser Reload"
   }
 }
