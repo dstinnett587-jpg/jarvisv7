@@ -1,11 +1,11 @@
 {
-  "id": "chatgpt-mac-naruto-sasuke-20260820-2200",
+  "id": "chatgpt-mac-naruto-sasuke-retry-20260820-2202",
   "action": "open_url",
   "payload": {
     "url": "https://www.youtube.com/results?search_query=Naruto+vs+Sasuke+final+battle"
   },
   "display": {
     "source": "chatgpt",
-    "label": "OPEN ON MAC NOW: Naruto vs Sasuke final battle YouTube"
+    "label": "RETRY ON MAC: Naruto vs Sasuke final battle YouTube"
   }
 }
