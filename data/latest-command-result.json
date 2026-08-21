@@ -1,11 +1,11 @@
 {
-  "command_id": "chatgpt-j-youtube-search-naruto-sasuke-20260820-2253",
+  "command_id": "chatgpt-j-play-naruto-sasuke-20260820-2258",
   "action": "open_url",
   "status": "failed",
-  "completed_at": "2026-08-21T03:47:58.896538+00:00",
+  "completed_at": "2026-08-21T03:53:52.811153+00:00",
   "error": "Unsupported command",
   "display": {
     "source": "chatgpt",
-    "label": "YOUTUBE SEARCH: Naruto vs Sasuke"
+    "label": "PLAY VIDEO: Naruto vs Sasuke The Final Battle"
   }
 }
