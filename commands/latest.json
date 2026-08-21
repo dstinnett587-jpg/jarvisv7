@@ -1,6 +1,6 @@
 {
-  "id": "chatgpt-j-control-test-20260821-001",
-  "action": "media_toggle",
+  "id": "chatgpt-j-control-test-20260821-002",
+  "action": "media_play_pause",
   "payload": {},
   "display": {
     "source": "chatgpt",
