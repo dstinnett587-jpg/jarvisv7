@@ -52,7 +52,7 @@
           const target=targetUrl(req),opened=openInMediaTab(target);
           window.JSafety?.log?.('media-router',`${req.platform} voice video: ${req.query}`);
           const reply=opened?`I pulled up ${req.query}.`:`I found ${req.query}, but I need you to tap J once so I can reserve the media tab.`;
-          return new Response(JSON.stringify({reply}),{status:200,headers:{'Content-Type':'application/json'}});
+          return new Response(JSON.stringify({reply,continueConversation:true}),{status:200,headers:{'Content-Type':'application/json'}});
         }
       }catch(e){console.warn('J media intercept',e)}
     }
@@ -67,7 +67,7 @@
       if(req){
         const opened=openInMediaTab(targetUrl(req));
         window.JSafety?.log?.('media-router',`${req.platform} typed video: ${req.query}`);
-        return window.speak?.(opened?`I pulled up ${req.query}.`:`Tap J once and ask me again so I can open the media tab.`,{continueConversation:false});
+        return window.speak?.(opened?`I pulled up ${req.query}.`:`Tap J once and ask me again so I can open the media tab.`,{continueConversation:true});
       }
       return oldAsk(text);
     };
