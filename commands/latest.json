@@ -1,11 +1,11 @@
 {
-  "id": "chatgpt-j-open-youtube-after-reinstall-20260820-2230",
+  "id": "chatgpt-j-open-youtube-patched-20260820-2236",
   "action": "open_url",
   "payload": {
     "url": "https://www.youtube.com/"
   },
   "display": {
     "source": "chatgpt",
-    "label": "POST-REINSTALL TEST: OPEN YOUTUBE"
+    "label": "PATCHED AGENT TEST: OPEN YOUTUBE"
   }
 }
