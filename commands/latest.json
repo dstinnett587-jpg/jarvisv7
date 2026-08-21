@@ -1,11 +1,9 @@
 {
-  "id": "chatgpt-j-open-bible-archaeology-20260821-0012",
-  "action": "open_url",
-  "payload": {
-    "url": "https://www.youtube.com/watch?v=52q5yy98uSo"
-  },
+  "id": "chatgpt-j-control-test-20260821-001",
+  "action": "media_toggle",
+  "payload": {},
   "display": {
     "source": "chatgpt",
-    "label": "OPEN VIDEO: Evidence for the Bible - Discoveries from Archaeology"
+    "label": "CONTROL TEST: Play/Pause"
   }
 }
