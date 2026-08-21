@@ -1,11 +1,11 @@
 {
-  "id": "chatgpt-j-play-bible-archaeology-20260821-0005",
+  "id": "chatgpt-j-play-bible-archaeology-test-20260821-0006",
   "action": "play_video",
   "payload": {
     "url": "https://www.youtube.com/watch?v=52q5yy98uSo"
   },
   "display": {
     "source": "chatgpt",
-    "label": "PLAY VIDEO: Evidence for the Bible - Discoveries from Archaeology"
+    "label": "TEST: Evidence for the Bible - Discoveries from Archaeology"
   }
 }
