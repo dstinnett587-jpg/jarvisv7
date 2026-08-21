@@ -1,11 +1,11 @@
 {
-  "command_id": "chatgpt-mac-test-calculator-20260820-2204",
-  "action": "open_app",
+  "command_id": "chatgpt-j-open-youtube-20260820-2206",
+  "action": "open_url",
   "status": "failed",
-  "completed_at": "2026-08-21T03:06:04.787757+00:00",
+  "completed_at": "2026-08-21T03:14:46.746498+00:00",
   "error": "Unsupported command",
   "display": {
     "source": "chatgpt",
-    "label": "MAC AGENT TEST: Open Calculator"
+    "label": "J: OPEN YOUTUBE"
   }
 }
