@@ -1,11 +1,11 @@
 {
-  "command_id": "chatgpt-j-coldboot-youtube-20260820-2250",
+  "command_id": "chatgpt-j-youtube-search-naruto-sasuke-20260820-2253",
   "action": "open_url",
   "status": "failed",
-  "completed_at": "2026-08-21T03:45:46.978968+00:00",
+  "completed_at": "2026-08-21T03:47:58.896538+00:00",
   "error": "Unsupported command",
   "display": {
     "source": "chatgpt",
-    "label": "COLD BOOT TEST: OPEN YOUTUBE"
+    "label": "YOUTUBE SEARCH: Naruto vs Sasuke"
   }
 }
