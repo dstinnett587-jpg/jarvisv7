@@ -1,11 +1,9 @@
 {
-  "id": "chatgpt-j-full-test-20260821-001",
-  "action": "open_url",
-  "payload": {
-    "url": "https://www.youtube.com/results?search_query=naruto"
-  },
+  "id": "chatgpt-j-full-test-20260821-002",
+  "action": "media_play_pause",
+  "payload": {},
   "display": {
     "source": "chatgpt",
-    "label": "FULL TEST 1: Open Naruto search"
+    "label": "FULL TEST 2: Play/Pause"
   }
 }
