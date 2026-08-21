@@ -1,11 +1,11 @@
 {
-  "id": "chatgpt-j-test-open-url-20260821-0107",
+  "id": "chatgpt-j-full-test-20260821-001",
   "action": "open_url",
   "payload": {
-    "url": "https://www.youtube.com/watch?v=52q5yy98uSo"
+    "url": "https://www.youtube.com/results?search_query=naruto"
   },
   "display": {
     "source": "chatgpt",
-    "label": "TEST 1: Open Bible archaeology video"
+    "label": "FULL TEST 1: Open Naruto search"
   }
 }
