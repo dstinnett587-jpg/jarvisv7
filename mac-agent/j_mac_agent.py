@@ -12,7 +12,7 @@ COMMAND_URL = os.environ.get(
     "J_COMMAND_URL",
     "https://raw.githubusercontent.com/dstinnett587-jpg/jarvisv7/feature/j-vision-screen/commands/latest.json",
 )
-POLL_SECONDS = float(os.environ.get("J_POLL_SECONDS", "0.75"))
+POLL_SECONDS = float(os.environ.get("J_POLL_SECONDS", "5"))
 STATE_DIR = Path.home() / ".j-mac-agent"
 STATE_FILE = STATE_DIR / "state.json"
 LOG_FILE = STATE_DIR / "agent.log"
@@ -67,7 +67,7 @@ def fetch_command():
     req = urllib.request.Request(
         COMMAND_URL + ("&" if "?" in COMMAND_URL else "?") + f"t={int(time.time()*1000)}",
         headers={
-            "User-Agent": "JMacAgent/1.3",
+            "User-Agent": "JMacAgent/1.4",
             "Cache-Control": "no-cache, no-store, max-age=0",
             "Pragma": "no-cache",
         },
@@ -179,7 +179,8 @@ def type_text(text: str):
 
 
 def click_xy(x, y, reason=""):
-    x = int(x); y = int(y)
+    x = int(x)
+    y = int(y)
     if not (0 <= x <= 10000 and 0 <= y <= 10000):
         raise ValueError("Click coordinates out of range")
     why = f"\n\nReason: {reason[:240]}" if reason else ""
@@ -196,8 +197,6 @@ def scroll(amount, reason=""):
     why = f"\n\nReason: {reason[:240]}" if reason else ""
     if not approve(f"J wants to scroll the active window by {amount}.{why}"):
         raise PermissionError("User denied scroll action")
-    p = osascript(f'tell application "System Events" to scroll area 1 of process 1') if False else None
-    # CGEvent-based scrolling is not available from AppleScript directly; use small arrow/page keystrokes.
     key_code = 125 if amount > 0 else 126
     for _ in range(max(1, min(abs(amount), 8))):
         r = osascript(f'tell application "System Events" to key code {key_code}')
@@ -261,12 +260,14 @@ def main():
 
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     state = load_state()
-    log(f"J Mac Agent online · poll={POLL_SECONDS}s")
+    delay = POLL_SECONDS
+    log(f"J Mac Agent online · poll={POLL_SECONDS}s · adaptive backoff enabled")
     notify("J · Mac Agent", "Online and waiting for commands")
 
     while True:
         try:
             cmd = fetch_command()
+            delay = POLL_SECONDS
             cid = str(cmd.get("id") or "")
             if cid and cid != state.get("last_id"):
                 state["last_id"] = cid
@@ -279,8 +280,13 @@ def main():
                     log(f"failed {cid}: {e}")
                     notify("J · Mac Agent", f"Task failed: {e}")
         except Exception as e:
-            log(f"poll error: {e}")
-        time.sleep(POLL_SECONDS)
+            text = str(e)
+            if "403" in text or "rate limit" in text.lower():
+                delay = min(max(delay * 2, 15), 120)
+            else:
+                delay = min(max(delay * 1.5, POLL_SECONDS), 30)
+            log(f"poll error: {e} · retry in {delay:.0f}s")
+        time.sleep(delay)
 
 
 if __name__ == "__main__":
