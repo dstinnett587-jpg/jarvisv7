@@ -1,11 +1,15 @@
 {
-  "command_id": "chatgpt-j-play-naruto-sasuke-20260820-2258",
-  "action": "open_url",
-  "status": "failed",
-  "completed_at": "2026-08-21T03:53:52.811153+00:00",
-  "error": "Unsupported command",
+  "command_id": "chatgpt-j-play-bible-archaeology-20260821-0005",
+  "action": "play_video",
+  "status": "complete",
+  "completed_at": "2026-08-21T05:10:24.027612+00:00",
   "display": {
     "source": "chatgpt",
-    "label": "PLAY VIDEO: Naruto vs Sasuke The Final Battle"
-  }
+    "label": "PLAY VIDEO: Evidence for the Bible - Discoveries from Archaeology"
+  },
+  "title": "PLAY VIDEO: Evidence for the Bible - Discoveries from Archaeology",
+  "message": "Remote video command ready for J Mac Agent.",
+  "url": "https://www.youtube.com/watch?v=52q5yy98uSo",
+  "open_url": "https://www.youtube.com/watch?v=52q5yy98uSo",
+  "video_url": "https://www.youtube.com/watch?v=52q5yy98uSo"
 }
