@@ -1,11 +1,11 @@
 {
-  "id": "chatgpt-j-control-poll-test-20260821-003",
+  "id": "chatgpt-j-test-open-url-20260821-0107",
   "action": "open_url",
   "payload": {
     "url": "https://www.youtube.com/watch?v=52q5yy98uSo"
   },
   "display": {
     "source": "chatgpt",
-    "label": "CONTROL POLL TEST: Open YouTube video"
+    "label": "TEST 1: Open Bible archaeology video"
   }
 }
