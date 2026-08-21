@@ -1,13 +1,13 @@
 {
-  "command_id": "chatgpt-j-control-poll-test-20260821-003",
+  "command_id": "chatgpt-j-test-open-url-20260821-0107",
   "action": "open_url",
   "status": "complete",
-  "completed_at": "2026-08-21T06:04:16.835225+00:00",
+  "completed_at": "2026-08-21T06:20:07.525122+00:00",
   "display": {
     "source": "chatgpt",
-    "label": "CONTROL POLL TEST: Open YouTube video"
+    "label": "TEST 1: Open Bible archaeology video"
   },
-  "title": "CONTROL POLL TEST: Open YouTube video",
+  "title": "TEST 1: Open Bible archaeology video",
   "message": "Remote URL command ready for J Mac Agent.",
   "url": "https://www.youtube.com/watch?v=52q5yy98uSo",
   "open_url": "https://www.youtube.com/watch?v=52q5yy98uSo"
