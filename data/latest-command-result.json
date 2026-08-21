@@ -1,14 +1,11 @@
 {
-  "command_id": "chatgpt-j-open-bible-archaeology-20260821-0012",
-  "action": "open_url",
-  "status": "complete",
-  "completed_at": "2026-08-21T05:19:47.793430+00:00",
+  "command_id": "chatgpt-j-control-test-20260821-001",
+  "action": "media_toggle",
+  "status": "failed",
+  "completed_at": "2026-08-21T06:01:04.803324+00:00",
+  "error": "Unsupported command",
   "display": {
     "source": "chatgpt",
-    "label": "OPEN VIDEO: Evidence for the Bible - Discoveries from Archaeology"
-  },
-  "title": "OPEN VIDEO: Evidence for the Bible - Discoveries from Archaeology",
-  "message": "Remote URL command ready for J Mac Agent.",
-  "url": "https://www.youtube.com/watch?v=52q5yy98uSo",
-  "open_url": "https://www.youtube.com/watch?v=52q5yy98uSo"
+    "label": "CONTROL TEST: Play/Pause"
+  }
 }
