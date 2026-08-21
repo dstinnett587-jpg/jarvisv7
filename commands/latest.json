@@ -1,11 +1,11 @@
 {
-  "id": "chatgpt-j-play-naruto-sasuke-20260820-2258",
-  "action": "open_url",
+  "id": "chatgpt-j-play-bible-archaeology-20260821-0005",
+  "action": "play_video",
   "payload": {
-    "url": "https://www.youtube.com/watch?v=qi2rByJed-E"
+    "url": "https://www.youtube.com/watch?v=52q5yy98uSo"
   },
   "display": {
     "source": "chatgpt",
-    "label": "PLAY VIDEO: Naruto vs Sasuke The Final Battle"
+    "label": "PLAY VIDEO: Evidence for the Bible - Discoveries from Archaeology"
   }
 }
