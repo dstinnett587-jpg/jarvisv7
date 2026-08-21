@@ -1,9 +1,11 @@
 {
-  "id": "chatgpt-j-control-test-20260821-002",
-  "action": "media_play_pause",
-  "payload": {},
+  "id": "chatgpt-j-control-poll-test-20260821-003",
+  "action": "open_url",
+  "payload": {
+    "url": "https://www.youtube.com/watch?v=52q5yy98uSo"
+  },
   "display": {
     "source": "chatgpt",
-    "label": "CONTROL TEST: Play/Pause"
+    "label": "CONTROL POLL TEST: Open YouTube video"
   }
 }
