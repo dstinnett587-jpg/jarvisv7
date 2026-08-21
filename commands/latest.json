@@ -1,11 +1,11 @@
 {
-  "id": "chatgpt-mac-agent-ai-video-20260820-1",
+  "id": "chatgpt-mac-naruto-sasuke-20260820-2026",
   "action": "open_url",
   "payload": {
-    "url": "https://www.youtube.com/watch?v=Tm1_KHdh_kA"
+    "url": "https://www.youtube.com/results?search_query=Naruto+vs+Sasuke"
   },
   "display": {
     "source": "chatgpt",
-    "label": "OPEN ON MAC: AI computer-use browser automation video"
+    "label": "OPEN ON MAC: Naruto vs Sasuke YouTube"
   }
 }
