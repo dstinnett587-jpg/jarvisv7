@@ -1,14 +1,13 @@
 {
-  "command_id": "chatgpt-j-full-test-20260821-003",
-  "action": "open_url",
+  "command_id": "chatgpt-j-full-test-20260821-004",
+  "action": "browser_reload",
   "status": "complete",
-  "completed_at": "2026-08-21T22:55:24.005809+00:00",
+  "completed_at": "2026-08-21T23:00:09.812520+00:00",
   "display": {
     "source": "chatgpt",
-    "label": "FULL TEST 2: Open Naruto's Best Fights video"
+    "label": "FULL TEST 3: Browser Reload"
   },
-  "title": "FULL TEST 2: Open Naruto's Best Fights video",
-  "message": "Remote URL command ready for J Mac Agent.",
-  "url": "https://www.youtube.com/watch?v=CNWI9lJZ7aw",
-  "open_url": "https://www.youtube.com/watch?v=CNWI9lJZ7aw"
+  "title": "FULL TEST 3: Browser Reload",
+  "message": "Remote Mac control command ready for J Mac Agent.",
+  "payload": {}
 }
