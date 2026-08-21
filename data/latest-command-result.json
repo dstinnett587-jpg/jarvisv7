@@ -1,11 +1,11 @@
 {
-  "command_id": "chatgpt-j-youtube-after-permissions-20260820-2242",
+  "command_id": "chatgpt-j-coldboot-youtube-20260820-2250",
   "action": "open_url",
   "status": "failed",
-  "completed_at": "2026-08-21T03:41:36.342879+00:00",
+  "completed_at": "2026-08-21T03:45:46.978968+00:00",
   "error": "Unsupported command",
   "display": {
     "source": "chatgpt",
-    "label": "PERMISSION TEST: OPEN YOUTUBE"
+    "label": "COLD BOOT TEST: OPEN YOUTUBE"
   }
 }
