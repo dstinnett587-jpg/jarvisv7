@@ -1,11 +1,11 @@
 {
-  "id": "chatgpt-mac-test-calculator-20260820-2204",
-  "action": "open_app",
+  "id": "chatgpt-j-open-youtube-20260820-2206",
+  "action": "open_url",
   "payload": {
-    "app": "Calculator"
+    "url": "https://www.youtube.com/"
   },
   "display": {
     "source": "chatgpt",
-    "label": "MAC AGENT TEST: Open Calculator"
+    "label": "J: OPEN YOUTUBE"
   }
 }
