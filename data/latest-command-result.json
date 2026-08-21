@@ -1,13 +1,13 @@
 {
-  "command_id": "chatgpt-j-play-bible-archaeology-test-20260821-0006",
+  "command_id": "chatgpt-j-play-bible-archaeology-retry-20260821-0007",
   "action": "play_video",
   "status": "complete",
-  "completed_at": "2026-08-21T05:11:43.474874+00:00",
+  "completed_at": "2026-08-21T05:13:53.072965+00:00",
   "display": {
     "source": "chatgpt",
-    "label": "TEST: Evidence for the Bible - Discoveries from Archaeology"
+    "label": "RETRY: Evidence for the Bible - Discoveries from Archaeology"
   },
-  "title": "TEST: Evidence for the Bible - Discoveries from Archaeology",
+  "title": "RETRY: Evidence for the Bible - Discoveries from Archaeology",
   "message": "Remote video command ready for J Mac Agent.",
   "url": "https://www.youtube.com/watch?v=52q5yy98uSo",
   "open_url": "https://www.youtube.com/watch?v=52q5yy98uSo",
