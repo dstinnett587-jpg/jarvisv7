@@ -1,12 +1,19 @@
 (()=>{
   let mediaTab=null;
+  let lastPlatform=null;
+  let mediaContextUntil=0;
+  const rememberPlatform=p=>{lastPlatform=p;mediaContextUntil=Date.now()+10*60*1000};
+  const currentPlatform=()=>Date.now()<mediaContextUntil?lastPlatform:null;
+
   function parseVideoRequest(text){
     const raw=String(text||'').trim();
     const t=raw.toLowerCase();
     const action=/\b(pull up|put on|show me|open|find|search(?: for)?|play)\b/.test(t);
     const explicitVideo=/\b(youtube|yt|video|videos|tiktok|reel|clip)\b/.test(t);
     const implicitPlay=/\bplay\b/.test(t)&&raw.replace(/^\s*(?:hey\s+)?(?:j|jay|jarvis)\s*[,.:;-]?\s*/i,'').replace(/\bplay\b/i,'').trim().length>0;
-    if(!action||(!explicitVideo&&!implicitPlay))return null;
+    const contextualPlatform=currentPlatform();
+    const contextualAction=!!contextualPlatform&&/\b(search(?: for)?|find|open|show me|play|put on|pull up)\b/.test(t);
+    if(!action||(!explicitVideo&&!implicitPlay&&!contextualAction))return null;
     const explicitUrl=(raw.match(/https?:\/\/[^\s]+/i)||[])[0]||null;
     let q=raw
       .replace(/^\s*(?:hey\s+)?(?:j|jay|jarvis)\s*[,.:;-]?\s*/i,'')
@@ -17,7 +24,7 @@
       .replace(/\b(?:a|the)\s+(?:youtube|yt|tiktok)?\s*videos?\s*(?:of|about|for|on)?\b/ig,'')
       .replace(/\b(?:youtube|yt|tiktok|reel|clip|videos?)\b/ig,'')
       .replace(/\s+/g,' ').trim();
-    const platform=/\b(?:youtube|yt)\b/i.test(raw)?'youtube':/\btiktok\b/i.test(raw)?'tiktok':implicitPlay?'youtube':'video';
+    const platform=/\b(?:youtube|yt)\b/i.test(raw)?'youtube':/\btiktok\b/i.test(raw)?'tiktok':implicitPlay?'youtube':contextualPlatform||'video';
     return {query:q||'latest videos',platform,explicitUrl};
   }
   function targetUrl(req){
@@ -49,6 +56,7 @@
         const body=JSON.parse(init?.body||'{}');
         const req=parseVideoRequest(body.message||'');
         if(req){
+          rememberPlatform(req.platform);
           const target=targetUrl(req),opened=openInMediaTab(target);
           window.JSafety?.log?.('media-router',`${req.platform} voice video: ${req.query}`);
           const reply=opened?`I pulled up ${req.query}.`:`I found ${req.query}, but I need you to tap J once so I can reserve the media tab.`;
@@ -65,6 +73,7 @@
     const wrapped=async function(text){
       const req=parseVideoRequest(text);
       if(req){
+        rememberPlatform(req.platform);
         const opened=openInMediaTab(targetUrl(req));
         window.JSafety?.log?.('media-router',`${req.platform} typed video: ${req.query}`);
         return window.speak?.(opened?`I pulled up ${req.query}.`:`Tap J once and ask me again so I can open the media tab.`,{continueConversation:true});
