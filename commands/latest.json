@@ -1,11 +1,11 @@
 {
-  "id": "chatgpt-j-youtube-after-permissions-20260820-2242",
+  "id": "chatgpt-j-coldboot-youtube-20260820-2250",
   "action": "open_url",
   "payload": {
     "url": "https://www.youtube.com/"
   },
   "display": {
     "source": "chatgpt",
-    "label": "PERMISSION TEST: OPEN YOUTUBE"
+    "label": "COLD BOOT TEST: OPEN YOUTUBE"
   }
 }
