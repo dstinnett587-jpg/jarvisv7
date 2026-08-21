@@ -67,7 +67,7 @@ def fetch_command():
     req = urllib.request.Request(
         COMMAND_URL + ("&" if "?" in COMMAND_URL else "?") + f"t={int(time.time()*1000)}",
         headers={
-            "User-Agent": "JMacAgent/1.1",
+            "User-Agent": "JMacAgent/1.2",
             "Cache-Control": "no-cache, no-store, max-age=0",
             "Pragma": "no-cache",
         },
@@ -77,7 +77,7 @@ def fetch_command():
 
 
 def osascript(script: str):
-    return subprocess.run(["osascript", "-e", script], check=False, capture_output=True, text=True)
+    return subprocess.run(["/usr/bin/osascript", "-e", script], check=False, capture_output=True, text=True)
 
 
 def notify(title: str, message: str):
@@ -100,13 +100,31 @@ def open_url(url: str):
     u = urlparse(url)
     if u.scheme not in ("http", "https") or not u.netloc:
         raise ValueError("Only normal http/https URLs are allowed")
-    subprocess.run(["open", url], check=False)
+
+    safe = url.replace("\\", "\\\\").replace('"', '\\"')
+
+    # LaunchAgents can successfully call `open` without visibly surfacing the
+    # browser window. Use macOS Standard Additions first so the default browser
+    # receives the URL in the logged-in GUI session and comes forward.
+    p = osascript(f'open location "{safe}"')
+    if p.returncode == 0:
+        log(f"open_url via AppleScript: {url}")
+        return
+
+    # Fallback to the native opener and fail loudly if macOS rejects it.
+    p2 = subprocess.run(["/usr/bin/open", url], check=False, capture_output=True, text=True)
+    if p2.returncode != 0:
+        detail = (p2.stderr or p.stderr or "unknown open error").strip()
+        raise RuntimeError(f"Opening URL failed: {detail}")
+    log(f"open_url via /usr/bin/open: {url}")
 
 
 def open_app(name: str):
     if name not in SAFE_APPS:
         raise ValueError(f"App not in allowlist: {name}")
-    subprocess.run(["open", "-a", name], check=False)
+    p = subprocess.run(["/usr/bin/open", "-a", name], check=False, capture_output=True, text=True)
+    if p.returncode != 0:
+        raise RuntimeError((p.stderr or f"Could not open {name}").strip())
 
 
 def focus_app(name: str):
@@ -139,7 +157,7 @@ def quit_app(name: str):
 def run_shortcut(name: str):
     if not approve(f"J wants to run the macOS Shortcut: {name}"):
         raise PermissionError("User denied Shortcut")
-    subprocess.run(["shortcuts", "run", name], check=False)
+    subprocess.run(["/usr/bin/shortcuts", "run", name], check=False)
 
 
 def handle(cmd: dict):
