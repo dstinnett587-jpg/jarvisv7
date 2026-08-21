@@ -29,7 +29,7 @@ SAFE_APPS = {
     "System Settings",
 }
 
-APPROVAL_ACTIONS = {"type_text", "run_shortcut", "quit_app"}
+APPROVAL_ACTIONS = {"type_text", "run_shortcut", "quit_app", "click_xy", "scroll"}
 
 BLOCKED_ACTIONS = {
     "delete_file",
@@ -67,7 +67,7 @@ def fetch_command():
     req = urllib.request.Request(
         COMMAND_URL + ("&" if "?" in COMMAND_URL else "?") + f"t={int(time.time()*1000)}",
         headers={
-            "User-Agent": "JMacAgent/1.2",
+            "User-Agent": "JMacAgent/1.3",
             "Cache-Control": "no-cache, no-store, max-age=0",
             "Pragma": "no-cache",
         },
@@ -100,18 +100,11 @@ def open_url(url: str):
     u = urlparse(url)
     if u.scheme not in ("http", "https") or not u.netloc:
         raise ValueError("Only normal http/https URLs are allowed")
-
     safe = url.replace("\\", "\\\\").replace('"', '\\"')
-
-    # LaunchAgents can successfully call `open` without visibly surfacing the
-    # browser window. Use macOS Standard Additions first so the default browser
-    # receives the URL in the logged-in GUI session and comes forward.
     p = osascript(f'open location "{safe}"')
     if p.returncode == 0:
         log(f"open_url via AppleScript: {url}")
         return
-
-    # Fallback to the native opener and fail loudly if macOS rejects it.
     p2 = subprocess.run(["/usr/bin/open", url], check=False, capture_output=True, text=True)
     if p2.returncode != 0:
         detail = (p2.stderr or p.stderr or "unknown open error").strip()
@@ -134,6 +127,46 @@ def focus_app(name: str):
     osascript(f'tell application "{safe}" to activate')
 
 
+def system_keystroke(key: str, modifiers=None):
+    modifiers = modifiers or []
+    allowed_keys = {"[", "]", "r", "l", "f", "space", "escape", "return", "tab"}
+    if key not in allowed_keys:
+        raise ValueError("Key is not in J's safe key allowlist")
+    allowed_mods = {"command down", "option down", "control down", "shift down"}
+    if any(m not in allowed_mods for m in modifiers):
+        raise ValueError("Unsupported keyboard modifier")
+    if key == "space":
+        script = 'tell application "System Events" to key code 49'
+    elif key == "escape":
+        script = 'tell application "System Events" to key code 53'
+    elif key == "return":
+        script = 'tell application "System Events" to key code 36'
+    elif key == "tab":
+        script = 'tell application "System Events" to key code 48'
+    else:
+        using = " using {" + ", ".join(modifiers) + "}" if modifiers else ""
+        script = f'tell application "System Events" to keystroke "{key}"{using}'
+    p = osascript(script)
+    if p.returncode != 0:
+        raise RuntimeError("Keyboard control failed. Grant Accessibility permission to J Mac Agent.")
+
+
+def browser_action(action: str):
+    mapping = {
+        "browser_back": ("[", ["command down"]),
+        "browser_forward": ("]", ["command down"]),
+        "browser_reload": ("r", ["command down"]),
+        "browser_address": ("l", ["command down"]),
+        "browser_find": ("f", ["command down"]),
+        "media_play_pause": ("space", []),
+        "escape": ("escape", []),
+    }
+    if action not in mapping:
+        raise ValueError(f"Unsupported browser action: {action}")
+    key, mods = mapping[action]
+    system_keystroke(key, mods)
+
+
 def type_text(text: str):
     if len(text) > 2000:
         raise ValueError("Text too long")
@@ -142,7 +175,34 @@ def type_text(text: str):
     safe = text.replace("\\", "\\\\").replace('"', '\\"')
     p = osascript(f'tell application "System Events" to keystroke "{safe}"')
     if p.returncode != 0:
-        raise RuntimeError("Typing failed. Grant Accessibility permission to Terminal/Python running J.")
+        raise RuntimeError("Typing failed. Grant Accessibility permission to J Mac Agent.")
+
+
+def click_xy(x, y, reason=""):
+    x = int(x); y = int(y)
+    if not (0 <= x <= 10000 and 0 <= y <= 10000):
+        raise ValueError("Click coordinates out of range")
+    why = f"\n\nReason: {reason[:240]}" if reason else ""
+    if not approve(f"J wants to click your screen at ({x}, {y}).{why}"):
+        raise PermissionError("User denied click action")
+    script = f'tell application "System Events" to click at {{{x}, {y}}}'
+    p = osascript(script)
+    if p.returncode != 0:
+        raise RuntimeError("Click failed. Grant Accessibility permission to J Mac Agent.")
+
+
+def scroll(amount, reason=""):
+    amount = max(-20, min(20, int(amount)))
+    why = f"\n\nReason: {reason[:240]}" if reason else ""
+    if not approve(f"J wants to scroll the active window by {amount}.{why}"):
+        raise PermissionError("User denied scroll action")
+    p = osascript(f'tell application "System Events" to scroll area 1 of process 1') if False else None
+    # CGEvent-based scrolling is not available from AppleScript directly; use small arrow/page keystrokes.
+    key_code = 125 if amount > 0 else 126
+    for _ in range(max(1, min(abs(amount), 8))):
+        r = osascript(f'tell application "System Events" to key code {key_code}')
+        if r.returncode != 0:
+            raise RuntimeError("Scroll failed. Grant Accessibility permission to J Mac Agent.")
 
 
 def quit_app(name: str):
@@ -174,8 +234,14 @@ def handle(cmd: dict):
         open_app(str(p.get("app") or ""))
     elif action == "focus_app":
         focus_app(str(p.get("app") or ""))
+    elif action in {"browser_back", "browser_forward", "browser_reload", "browser_address", "browser_find", "media_play_pause", "escape"}:
+        browser_action(action)
     elif action == "type_text":
         type_text(str(p.get("text") or ""))
+    elif action == "click_xy":
+        click_xy(p.get("x") or 0, p.get("y") or 0, str(p.get("reason") or ""))
+    elif action == "scroll":
+        scroll(p.get("amount") or 1, str(p.get("reason") or ""))
     elif action == "quit_app":
         quit_app(str(p.get("app") or ""))
     elif action == "run_shortcut":
