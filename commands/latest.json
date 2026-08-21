@@ -1,11 +1,9 @@
 {
-  "id": "chatgpt-j-full-test-20260821-005",
-  "action": "focus_app",
-  "payload": {
-    "app": "Safari"
-  },
+  "id": "chatgpt-j-full-test-20260821-006",
+  "action": "browser_reload",
+  "payload": {},
   "display": {
     "source": "chatgpt",
-    "label": "FULL TEST 3A: Focus Safari"
+    "label": "FULL TEST 3B: Reload Safari"
   }
 }
