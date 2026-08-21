@@ -1,14 +1,14 @@
 {
-  "command_id": "chatgpt-j-test-open-url-20260821-0107",
+  "command_id": "chatgpt-j-full-test-20260821-001",
   "action": "open_url",
   "status": "complete",
-  "completed_at": "2026-08-21T06:20:07.525122+00:00",
+  "completed_at": "2026-08-21T22:52:13.731672+00:00",
   "display": {
     "source": "chatgpt",
-    "label": "TEST 1: Open Bible archaeology video"
+    "label": "FULL TEST 1: Open Naruto search"
   },
-  "title": "TEST 1: Open Bible archaeology video",
+  "title": "FULL TEST 1: Open Naruto search",
   "message": "Remote URL command ready for J Mac Agent.",
-  "url": "https://www.youtube.com/watch?v=52q5yy98uSo",
-  "open_url": "https://www.youtube.com/watch?v=52q5yy98uSo"
+  "url": "https://www.youtube.com/results?search_query=naruto",
+  "open_url": "https://www.youtube.com/results?search_query=naruto"
 }
