@@ -1,13 +1,14 @@
 {
-  "command_id": "chatgpt-j-control-test-20260821-002",
-  "action": "media_play_pause",
+  "command_id": "chatgpt-j-control-poll-test-20260821-003",
+  "action": "open_url",
   "status": "complete",
-  "completed_at": "2026-08-21T06:02:28.989718+00:00",
+  "completed_at": "2026-08-21T06:04:16.835225+00:00",
   "display": {
     "source": "chatgpt",
-    "label": "CONTROL TEST: Play/Pause"
+    "label": "CONTROL POLL TEST: Open YouTube video"
   },
-  "title": "CONTROL TEST: Play/Pause",
-  "message": "Remote Mac control command ready for J Mac Agent.",
-  "payload": {}
+  "title": "CONTROL POLL TEST: Open YouTube video",
+  "message": "Remote URL command ready for J Mac Agent.",
+  "url": "https://www.youtube.com/watch?v=52q5yy98uSo",
+  "open_url": "https://www.youtube.com/watch?v=52q5yy98uSo"
 }
