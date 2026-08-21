@@ -1,11 +1,13 @@
 {
-  "command_id": "chatgpt-j-control-test-20260821-001",
-  "action": "media_toggle",
-  "status": "failed",
-  "completed_at": "2026-08-21T06:01:04.803324+00:00",
-  "error": "Unsupported command",
+  "command_id": "chatgpt-j-control-test-20260821-002",
+  "action": "media_play_pause",
+  "status": "complete",
+  "completed_at": "2026-08-21T06:02:28.989718+00:00",
   "display": {
     "source": "chatgpt",
     "label": "CONTROL TEST: Play/Pause"
-  }
+  },
+  "title": "CONTROL TEST: Play/Pause",
+  "message": "Remote Mac control command ready for J Mac Agent.",
+  "payload": {}
 }
