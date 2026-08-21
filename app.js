@@ -75,7 +75,7 @@ async function ask(text){text=String(text||'').trim();if(!text||isAsking)return;
   if(!reply){let enhanced=text;if(outreachRequest(text)&&lastLeads[0])enhanced+=`\nUse this lead context only: ${JSON.stringify(lastLeads[0])}. Draft only unless the owner explicitly approves sending.`;const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:enhanced,history:history.slice(-40),context:{location:locationContext,timeZone:Intl.DateTimeFormat().resolvedOptions().timeZone||null,localTime:new Date().toISOString(),device:'phone',conversationMode:true}})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Request failed');reply=d.reply}
   history.push({role:'user',content:text},{role:'assistant',content:reply});history=history.slice(-40);saveHistory();
   if(!sitePreview?.classList.contains('open')&&!hudDrawer?.classList.contains('open'))await speak(reply,{continueConversation:true});else showResponse(reply);
-}catch(e){console.warn(e);await speak('I had trouble with that. Try me again.',{continueConversation:true})}finally{isAsking=false}}
+}catch(e){console.warn(e);await speak('I had trouble with that. Try me again.',{continueConversation:true})}finally{isAsking=false;if(activated&&!isSpeaking&&!processingAudio&&!sitePreview?.classList.contains('open')&&!hudDrawer?.classList.contains('open'))startAudioLoop(160)}}
 
 async function handleTranscript(said){said=String(said||'').trim();if(!said)return;const clean=said.replace(/^\s*(?:hey\s+)?(?:j|jay|jarvis)\s*[,.:;-]?\s*/i,'').trim();await ask(clean||said)}
 
