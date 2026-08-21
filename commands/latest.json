@@ -1,11 +1,11 @@
 {
-  "id": "chatgpt-j-coldboot-youtube-20260820-2250",
+  "id": "chatgpt-j-youtube-search-naruto-sasuke-20260820-2253",
   "action": "open_url",
   "payload": {
-    "url": "https://www.youtube.com/"
+    "url": "https://www.youtube.com/results?search_query=Naruto+vs+Sasuke"
   },
   "display": {
     "source": "chatgpt",
-    "label": "COLD BOOT TEST: OPEN YOUTUBE"
+    "label": "YOUTUBE SEARCH: Naruto vs Sasuke"
   }
 }
