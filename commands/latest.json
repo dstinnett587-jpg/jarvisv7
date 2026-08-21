@@ -1,11 +1,11 @@
 {
-  "id": "chatgpt-j-open-youtube-patched-20260820-2236",
+  "id": "chatgpt-j-youtube-after-permissions-20260820-2242",
   "action": "open_url",
   "payload": {
     "url": "https://www.youtube.com/"
   },
   "display": {
     "source": "chatgpt",
-    "label": "PATCHED AGENT TEST: OPEN YOUTUBE"
+    "label": "PERMISSION TEST: OPEN YOUTUBE"
   }
 }
