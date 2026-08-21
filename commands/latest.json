@@ -1,11 +1,11 @@
 {
-  "id": "chatgpt-j-play-bible-archaeology-retry-20260821-0010",
-  "action": "play_video",
+  "id": "chatgpt-j-open-bible-archaeology-20260821-0012",
+  "action": "open_url",
   "payload": {
     "url": "https://www.youtube.com/watch?v=52q5yy98uSo"
   },
   "display": {
     "source": "chatgpt",
-    "label": "RETRY: Evidence for the Bible - Discoveries from Archaeology"
+    "label": "OPEN VIDEO: Evidence for the Bible - Discoveries from Archaeology"
   }
 }
