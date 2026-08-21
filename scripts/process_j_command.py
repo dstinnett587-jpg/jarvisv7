@@ -40,6 +40,13 @@ def scan(lat,lon,radius_m,limit):
         except Exception as e: last=e
     raise RuntimeError(f'Business data providers unavailable: {last}')
 
+def safe_url(value):
+    url=str(value or '').strip()[:1000]
+    parsed=urllib.parse.urlparse(url)
+    if parsed.scheme not in ('http','https') or not parsed.netloc:
+        raise RuntimeError('Invalid URL')
+    return url
+
 def main():
     cmd=json.loads(CMD.read_text())
     now=datetime.datetime.now(datetime.timezone.utc).isoformat()
@@ -49,6 +56,12 @@ def main():
         p=cmd.get('payload') or {}
         if action=='status':
             result['message']='J remote command bridge is online.'
+        elif action=='open_url':
+            url=safe_url(p.get('url'))
+            result.update({'title':str((cmd.get('display') or {}).get('label') or 'J · OPEN URL')[:120],'message':'Remote URL command ready for J Mac Agent.','url':url,'open_url':url})
+        elif action=='play_video':
+            url=safe_url(p.get('url'))
+            result.update({'title':str((cmd.get('display') or {}).get('label') or 'J · PLAY VIDEO')[:120],'message':'Remote video command ready for J Mac Agent.','url':url,'open_url':url,'video_url':url})
         elif action in ('find_leads','scan_map'):
             place=str(p.get('location') or 'Dallas, TX')[:120]
             limit=max(1,min(int(p.get('limit') or 10),50)); radius=max(1609,min(int(p.get('radius_m') or 12000),30000))
