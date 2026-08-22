@@ -1,0 +1,74 @@
+{
+  "date": "2026-08-22",
+  "market": "Dallas, TX",
+  "leads": [
+    {
+      "rank": 1,
+      "name": "Santos Auto Detailing",
+      "category": "auto detailing",
+      "phone": "214-404-1418",
+      "email": "santosdetailing23@gmail.com",
+      "address": "Dallas, TX 75227 / 3610 Kingsford Ave listed on official Linktree",
+      "website_status": "No standalone business website found; official presence is primarily Linktree/social profiles",
+      "why_good": "Public business email, active DFW mobile-detailing operation, structured service packages, and social-first presence make a standalone booking/quote site a concrete upgrade.",
+      "confidence": "high"
+    },
+    {
+      "rank": 2,
+      "name": "Reserve for Loyalty barbershop",
+      "category": "barber shop",
+      "phone": "214-434-1879",
+      "alt_phone": "214-909-1162",
+      "address": "707 S Hampton Rd, Dallas, TX 75208",
+      "website_status": "Current directory explicitly reports no website listed; business has Facebook and third-party discovery pages",
+      "why_good": "Established local shop with dozens of reviews and appointment-driven services, but no owned website found. Strong fit for booking, barber profiles, services, and local SEO.",
+      "confidence": "high"
+    },
+    {
+      "rank": 3,
+      "name": "Smooth Operators Hair Salon",
+      "category": "hair salon",
+      "phone": "214-716-7184",
+      "address": "1201 Main St, Dallas, TX 75202",
+      "website_status": "Only a generic placeweb.site/third-party presence surfaced; no strong owned standalone site found",
+      "why_good": "Long-running salon with repeat-client reputation and a weak web footprint. Good fit for services, stylist profiles, gallery, booking/contact, and local search.",
+      "confidence": "medium-high"
+    },
+    {
+      "rank": 4,
+      "name": "Papa's Barber Shop",
+      "category": "barber shop",
+      "phone": "214-520-3325",
+      "address": "4601 Hartford St, Dallas, TX 75219",
+      "website_status": "Current Dallas directory explicitly says No Website",
+      "why_good": "Simple, phone-first local barber prospect with a visible need for an owned mobile-friendly site and booking/contact flow.",
+      "confidence": "medium"
+    },
+    {
+      "rank": 5,
+      "name": "Buzz Cuts Barber Shop",
+      "category": "barber shop",
+      "phone": "214-760-1965",
+      "address": "3101 Commerce St, Dallas, TX 75226",
+      "website_status": "Current Dallas directory explicitly says No Website",
+      "why_good": "Independent barber listing with public phone and no website listed; good low-complexity website prospect if current operation is confirmed before outreach.",
+      "confidence": "medium"
+    },
+    {
+      "rank": 6,
+      "name": "All Eyes On Me By Tari",
+      "category": "barber / beauty",
+      "phone": "214-437-7022",
+      "address": "2700 Commerce, Dallas, TX 75226",
+      "website_status": "Current Dallas directory explicitly says No Website",
+      "why_good": "Personal-brand style business where a portfolio, services, booking link, testimonials, and social embeds could materially improve conversion.",
+      "confidence": "medium"
+    }
+  ],
+  "excluded_examples": [
+    "Shine City Auto Detailing - has a current standalone website",
+    "Dime Barber Studio - has a GlossGenius website/booking presence",
+    "Texas Prime Details - has a current standalone website"
+  ],
+  "notes": "No outreach sent. Public contact details only. Verify medium-confidence prospects again immediately before outreach."
+}
