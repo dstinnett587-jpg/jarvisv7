@@ -64,6 +64,7 @@
   }
 
   async function loadLatestEdit(){
+    if(window.JVideoWorkspace?.loadLatest)return window.JVideoWorkspace.loadLatest(true);
     const ws=window.JWorkspace;
     if(!ws)return false;
     try{
@@ -79,7 +80,6 @@
       if(state)state.textContent='PREVIEW · '+String(meta.name||'LATEST EDIT').toUpperCase();
       const v=document.getElementById('editPreview');
       if(v){v.load();v.play().catch(()=>{});}
-      window.JSafety?.log?.('video-preview','Loaded latest local J edit: '+(meta.name||'unknown'));
       return true;
     }catch(e){
       const base=ws.__baseOpenVideo||ws.openVideo;
@@ -118,7 +118,6 @@
         if(isLocalEditRequest(said)){
           loadLatestEdit();
           setTimeout(()=>window.speak?.('Here it is.',{continueConversation:true}),80);
-          window.JSafety?.log?.('video-preview','Spoken command opened latest local edit');
           return new Response(JSON.stringify({...data,text:''}),{status:response.status,headers:{'Content-Type':'application/json'}});
         }
         if(isCloseEditRequest(said)){
@@ -141,7 +140,6 @@
         if(req){
           rememberPlatform(req.platform);
           const target=targetUrl(req),opened=openInMediaTab(target);
-          window.JSafety?.log?.('media-router',`${req.platform} voice video: ${req.query}`);
           const reply=opened?`I pulled up ${req.query}.`:`I found ${req.query}, but I need you to tap J once so I can reserve the media tab.`;
           return new Response(JSON.stringify({reply,continueConversation:true}),{status:200,headers:{'Content-Type':'application/json'}});
         }
@@ -166,7 +164,6 @@
       if(req){
         rememberPlatform(req.platform);
         const opened=openInMediaTab(targetUrl(req));
-        window.JSafety?.log?.('media-router',`${req.platform} typed video: ${req.query}`);
         return window.speak?.(opened?`I pulled up ${req.query}.`:`Tap J once and ask me again so I can open the media tab.`,{continueConversation:true});
       }
       return oldAsk(text);
@@ -179,4 +176,12 @@
 
   install();
   window.JMediaRouter={parseVideoRequest,targetUrl,reserveMediaTab,openInMediaTab,install,isLocalEditRequest,isCloseEditRequest,loadLatestEdit};
+
+  if(!document.querySelector('script[data-j-video-workspace]')){
+    const s=document.createElement('script');
+    s.src='./j-video-workspace.js?v=20260822-real-editor-1';
+    s.dataset.jVideoWorkspace='1';
+    s.onload=()=>{ if(document.getElementById('stage')?.classList.contains('workspaceOpen')) window.JVideoWorkspace?.loadLatest?.(true); };
+    document.head.appendChild(s);
+  }
 })();
