@@ -16,9 +16,6 @@
     return state;
   }
   async function prepare(){
-    // The conversation engine owns microphone permission and keeps the one live stream.
-    // Do not open and immediately stop a second getUserMedia stream here; on Opera/macOS
-    // that can leave the real activation request stuck on "Starting…".
     return inspectAudioDevices();
   }
   function describe(){
@@ -29,4 +26,5 @@
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')inspectAudioDevices()});
   window.addEventListener('load',()=>setTimeout(inspectAudioDevices,700));
   window.JPhoneAudio={prepare,inspect:inspectAudioDevices,describe,state};
+  const s=document.createElement('script');s.src='./j-live-stocks.js?v=20260823-live-1';s.defer=true;document.head.appendChild(s);
 })();
