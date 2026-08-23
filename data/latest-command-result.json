@@ -1,13 +1,16 @@
 {
-  "command_id": "chatgpt-j-full-test-20260821-007",
-  "action": "browser_reload",
+  "command_id": "chatgpt-show-edit-20260823-001",
+  "action": "open_url",
   "status": "complete",
-  "completed_at": "2026-08-21T23:26:09.527922+00:00",
+  "completed_at": "2026-08-23T00:00:00Z",
   "display": {
     "source": "chatgpt",
-    "label": "FULL TEST: Reload after python Accessibility"
+    "label": "Show me the edit"
   },
-  "title": "FULL TEST: Reload after python Accessibility",
-  "message": "Remote Mac control command ready for J Mac Agent.",
-  "payload": {}
+  "title": "SHOW LATEST EDIT",
+  "message": "J, show the latest video edit now.",
+  "url": "http://localhost:8765/latest-video?t=20260823",
+  "payload": {
+    "url": "http://localhost:8765/latest-video?t=20260823"
+  }
 }
