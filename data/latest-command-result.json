@@ -1,16 +1,14 @@
 {
-  "command_id": "chatgpt-show-edit-20260823-001",
+  "command_id": "chatgpt-show-edit-20260823-002",
   "action": "open_url",
   "status": "complete",
-  "completed_at": "2026-08-23T00:00:00Z",
+  "completed_at": "2026-08-23T05:24:38.044368+00:00",
   "display": {
     "source": "chatgpt",
-    "label": "Show me the edit"
+    "label": "Show latest J edit"
   },
-  "title": "SHOW LATEST EDIT",
-  "message": "J, show the latest video edit now.",
-  "url": "http://localhost:8765/latest-video?t=20260823",
-  "payload": {
-    "url": "http://localhost:8765/latest-video?t=20260823"
-  }
+  "title": "Show latest J edit",
+  "message": "Remote URL command ready for J Mac Agent.",
+  "url": "http://127.0.0.1:8765/preview",
+  "open_url": "http://127.0.0.1:8765/preview"
 }
