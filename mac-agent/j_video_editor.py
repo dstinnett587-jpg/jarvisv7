@@ -66,11 +66,13 @@ def render_mv_chaos(input_path: str, output_name: str = "mv-chaos-edit.mp4", sta
         "zoompan=z='min(zoom+0.0006,1.04)':d=1:s=1080x1920:fps=30"
     )
 
+    # Bundled FFmpeg uses a minimal libx264 wrapper that does not expose
+    # x264's -preset/-crf AVOptions. Use broadly-supported bitrate controls.
     cmd = [
         ffmpeg_bin(), "-y", "-ss", f"{start:.3f}", "-i", str(src), "-t", f"{duration:.3f}",
         "-vf", vf,
         "-af", "loudnorm=I=-14:TP=-1.5:LRA=11",
-        "-c:v", "libx264", "-preset", "medium", "-crf", "20",
+        "-c:v", "libx264", "-b:v", "8M",
         "-c:a", "aac", "-b:a", "192k",
         "-movflags", "+faststart",
         str(out),
