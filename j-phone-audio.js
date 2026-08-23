@@ -27,5 +27,6 @@
   window.JPhoneAudio={prepare,inspect:inspectAudioDevices,describe,state};
   loadExtra('./j-live-stocks.js?v=20260823-live-4','j-live-stocks-loader');
   loadExtra('./j-live-theme.js?v=20260823-ui-3','j-live-theme-loader');
-  loadExtra('./j-strong-center.js?v=20260823-strong-1','j-strong-center-loader');
+  loadExtra('./j-strong-center.js?v=20260823-strong-2','j-strong-center-loader');
+  loadExtra('./j-strong-visible.js?v=20260823-visible-1','j-strong-visible-loader');
 })();
