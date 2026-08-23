@@ -5,23 +5,33 @@ import subprocess
 import sys
 from pathlib import Path
 
+BASE_DIR = Path.home() / "Library" / "Application Support" / "JMacAgent"
 OUTPUT_DIR = Path.home() / "Movies" / "J Edits"
 
 
-def ffmpeg_bin():
-    for candidate in ("/opt/homebrew/bin/ffmpeg", "/usr/local/bin/ffmpeg", "ffmpeg"):
-        p = shutil.which(candidate) if candidate == "ffmpeg" else (candidate if Path(candidate).exists() else None)
+def _find_binary(name: str):
+    local = BASE_DIR / "bin" / name
+    if local.exists() and local.is_file():
+        return str(local)
+    for candidate in (f"/opt/homebrew/bin/{name}", f"/usr/local/bin/{name}", name):
+        p = shutil.which(candidate) if candidate == name else (candidate if Path(candidate).exists() else None)
         if p:
             return str(p)
-    raise RuntimeError("FFmpeg is not installed. Install it first, then retry.")
+    return None
+
+
+def ffmpeg_bin():
+    p = _find_binary("ffmpeg")
+    if p:
+        return p
+    raise RuntimeError("FFmpeg is not installed. Install the J-local FFmpeg bundle, then retry.")
 
 
 def ffprobe_bin():
-    for candidate in ("/opt/homebrew/bin/ffprobe", "/usr/local/bin/ffprobe", "ffprobe"):
-        p = shutil.which(candidate) if candidate == "ffprobe" else (candidate if Path(candidate).exists() else None)
-        if p:
-            return str(p)
-    raise RuntimeError("ffprobe is not installed. Install FFmpeg first, then retry.")
+    p = _find_binary("ffprobe")
+    if p:
+        return p
+    raise RuntimeError("ffprobe is not installed. Install the J-local FFmpeg bundle, then retry.")
 
 
 def probe(path: Path):
@@ -48,8 +58,6 @@ def render_mv_chaos(input_path: str, output_name: str = "mv-chaos-edit.mp4", sta
     duration = max(1.0, min(float(duration), 60.0))
     start = max(0.0, float(start))
 
-    # First deterministic MV Chaos pass: vertical crop, punchy contrast/saturation,
-    # light grain, subtle micro-zoom, normalized audio, social-ready export.
     vf = (
         "scale=1080:1920:force_original_aspect_ratio=increase,"
         "crop=1080:1920,"
