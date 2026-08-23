@@ -1,5 +1,5 @@
 (()=>{
-  const BASE='http://127.0.0.1:8765';
+  const BASE='http://localhost:8765';
   const stage=document.getElementById('stage');
   const video=document.getElementById('editPreview');
   const empty=document.getElementById('monitorEmpty');
@@ -25,20 +25,28 @@
   function showVideo(src,name,kind='edit'){
     if(!video)return false;
     currentKind=kind;
-    video.src=src;
     video.hidden=false;
     video.controls=true;
     video.playsInline=true;
+    video.preload='metadata';
+    video.src=src;
     if(empty)empty.hidden=true;
     if(state)state.textContent=(kind==='source'?'SOURCE · ':'PREVIEW · ')+String(name||'VIDEO').toUpperCase();
+    video.onerror=()=>{
+      if(empty){empty.hidden=false;empty.innerHTML='<strong>VIDEO BRIDGE BLOCKED</strong>J found the video, but Opera blocked the local stream. Open localhost:8765/health once, then come back to J.';}
+      setProgress(0,'BRIDGE BLOCKED');
+    };
+    video.onloadedmetadata=()=>{
+      if(empty)empty.hidden=true;
+      setProgress(100,kind==='source'?'SOURCE':'READY');
+    };
     video.load();
     video.play().catch(()=>{});
-    setProgress(100,kind==='source'?'SOURCE':'READY');
     return true;
   }
 
   async function getMeta(path='/latest-meta'){
-    const r=await fetch(BASE+path+'?t='+Date.now(),{cache:'no-store'});
+    const r=await fetch(BASE+path+'?t='+Date.now(),{cache:'no-store',mode:'cors'});
     if(!r.ok)throw new Error('Local J video server unavailable');
     const d=await r.json();
     if(!d.ok)throw new Error(d.error||'No video found');
@@ -49,21 +57,28 @@
     if(loading&&!force)return false;
     loading=true;
     setProgress(18,'CONNECTING');
+
+    // Put the local stream into the player immediately so the browser can
+    // start negotiating video even if the metadata fetch is delayed/blocked.
+    showVideo(BASE+'/latest-video?t='+Date.now(),'LATEST VIDEO','edit');
+
     try{
       const meta=await getMeta('/latest-meta');
       showVideo(BASE+'/latest-video?t='+Date.now(),meta.name,meta.kind||'edit');
       return true;
     }catch(e){
-      showEmpty('VIDEO NOT LOADED','J can see the editor, but the Mac video bridge needs to be refreshed.');
-      setProgress(0,'WAITING');
-      console.warn('J video workspace',e);
-      return false;
+      console.warn('J video metadata bridge',e);
+      // Keep the direct video URL mounted; its onloadedmetadata/onerror tells
+      // us whether Opera permits the localhost stream.
+      if(state)state.textContent='PREVIEW · LOCAL VIDEO';
+      return true;
     }finally{loading=false;}
   }
 
   async function showSource(){
     try{
       setProgress(25,'SOURCE');
+      showVideo(BASE+'/source-video?t='+Date.now(),'LATEST SOURCE','source');
       const meta=await getMeta('/source-meta');
       showVideo(BASE+'/source-video?t='+Date.now(),meta.name,'source');
     }catch(e){showEmpty('SOURCE NOT FOUND','Put the raw video in Downloads, then ask J again.');}
@@ -78,7 +93,7 @@
     let fake=8;
     const timer=setInterval(()=>{fake=Math.min(88,fake+3);setProgress(fake,fake<30?'CUTTING':fake<55?'PUNCH-INS':fake<72?'COLOR + GRAIN':'EXPORTING')},700);
     try{
-      const r=await fetch(BASE+'/render',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({start,duration,output:'MV-Chaos-Live.mp4'})});
+      const r=await fetch(BASE+'/render',{method:'POST',mode:'cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({start,duration,output:'MV-Chaos-Live.mp4'})});
       const d=await r.json();
       if(!r.ok||!d.ok)throw new Error(d.error||'Render failed');
       clearInterval(timer);
