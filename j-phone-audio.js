@@ -16,7 +16,9 @@
     return state;
   }
   async function prepare(){
-    try{if(navigator.mediaDevices?.getUserMedia){const s=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true},video:false});s.getTracks().forEach(t=>t.stop())}}catch{}
+    // The conversation engine owns microphone permission and keeps the one live stream.
+    // Do not open and immediately stop a second getUserMedia stream here; on Opera/macOS
+    // that can leave the real activation request stuck on "Starting…".
     return inspectAudioDevices();
   }
   function describe(){
