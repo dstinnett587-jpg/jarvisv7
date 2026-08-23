@@ -1,9 +1,11 @@
 {
-  "id": "chatgpt-j-full-test-20260821-007",
-  "action": "browser_reload",
-  "payload": {},
+  "id": "chatgpt-show-edit-20260823-002",
+  "action": "open_url",
+  "payload": {
+    "url": "http://127.0.0.1:8765/preview"
+  },
   "display": {
     "source": "chatgpt",
-    "label": "FULL TEST: Reload after python Accessibility"
+    "label": "Show latest J edit"
   }
 }
