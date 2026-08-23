@@ -20,11 +20,17 @@
     if(state.bluetoothLikely)return `Bluetooth audio ready${state.inputLabel?' · '+state.inputLabel:''}`;
     return state.inputLabel?`Audio ready · ${state.inputLabel}`:'Audio route ready';
   }
-  function loadExtra(src,id){if(document.getElementById(id))return;const s=document.createElement('script');s.id=id;s.src=src;s.defer=true;document.head.appendChild(s)}
+  function loadExtra(src,id){
+    if(document.getElementById(id))return;
+    const s=document.createElement('script');s.id=id;s.src=src;s.defer=true;
+    if(id==='j-video-workspace-loader')s.dataset.jVideoWorkspace='1';
+    document.head.appendChild(s)
+  }
   if(navigator.mediaDevices?.addEventListener)navigator.mediaDevices.addEventListener('devicechange',()=>inspectAudioDevices());
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')inspectAudioDevices()});
   window.addEventListener('load',()=>setTimeout(inspectAudioDevices,700));
   window.JPhoneAudio={prepare,inspect:inspectAudioDevices,describe,state};
+  loadExtra('./j-video-workspace.js?v=20260823-bridge-2','j-video-workspace-loader');
   loadExtra('./j-live-stocks.js?v=20260823-live-4','j-live-stocks-loader');
   loadExtra('./j-live-theme.js?v=20260823-ui-3','j-live-theme-loader');
   loadExtra('./j-strong-center.js?v=20260823-strong-2','j-strong-center-loader');
