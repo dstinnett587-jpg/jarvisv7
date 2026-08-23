@@ -51,6 +51,8 @@ function websiteRequest(text){const m=text.match(/\b(?:build|make|create|design)
 function isLeadRequest(text){return /\b(find|search|get|look for|scan)\b.*\b(business|businesses|leads|clients)\b/i.test(text)}
 function invoiceRequest(text){const m=text.match(/\b(?:invoice|bill|billing)\b[^$0-9]*\$?([0-9]+(?:\.[0-9]{1,2})?)/i);return m?Number(m[1]):null}
 function outreachRequest(text){return /\b(?:draft|write|make|create|send)\b.*\b(?:email|message|outreach|pitch)\b/i.test(text)}
+function showEditRequest(text){return /\b(?:show|let me see|pull up|open|bring up)\b.*\b(?:edit|video|render|cut)\b/i.test(text)||/\b(?:edit|video|render)\b.*\b(?:show|open|up)\b/i.test(text)}
+function closeEditRequest(text){return /\b(?:close|hide|put away|dismiss)\b.*\b(?:edit|video|workspace)\b/i.test(text)}
 async function getWeatherReply(){if(!locationContext)return null;const r=await fetch('/api/weather',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({latitude:locationContext.latitude,longitude:locationContext.longitude})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Weather unavailable');return d.reply}
 
 function openSitePreview(html){stopRecording();siteFrame.srcdoc=html;sitePreview.classList.add('open')}
@@ -68,7 +70,9 @@ async function speak(text,{continueConversation=true}={}){if(!text)return;isSpea
 
 async function ask(text){text=String(text||'').trim();if(!text||isAsking)return;isAsking=true;stopRecording();setStatus('THINKING','thinking');showResponse(text);try{
   let reply=null;const site=websiteRequest(text),amount=invoiceRequest(text);
-  if(site)reply=await buildBusinessSite(site);
+  if(showEditRequest(text)){window.JWorkspace?.openVideo?.();reply='Here it is.';}
+  else if(closeEditRequest(text)){window.JWorkspace?.close?.();reply='Got it.';}
+  else if(site)reply=await buildBusinessSite(site);
   else if(isLeadRequest(text))reply=await findLeads();
   else if(amount)reply=showInvoice(amount);
   else if(isWeatherQuestion(text)){if(!locationContext)requestLocation();for(let i=0;i<8&&!locationContext;i++)await sleep(250);if(locationContext)reply=await getWeatherReply()}
