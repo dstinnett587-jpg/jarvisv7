@@ -1,0 +1,18 @@
+(()=>{
+  if(window.JLiveStocks)return;
+  const SYMBOLS=['NVDA','TSLA','AAPL','AMD','META','AMZN','MSFT','SPY'];
+  let timer=null,last=null;
+  const style=document.createElement('style');
+  style.textContent='.jStockGrid{display:grid;gap:6px;margin-top:8px}.jStockRow{display:grid;grid-template-columns:44px 1fr 64px;gap:8px;align-items:center;padding:7px 0;border-top:1px solid #ffffff0d;font-size:10px}.jStockRow b{font-size:11px}.jStockPrice{text-align:right;font-variant-numeric:tabular-nums}.jStockChange{text-align:right;font-variant-numeric:tabular-nums}.jStockUp{color:#d9ffd9}.jStockDown{color:#ffd8d8}.jStockMeta{font-size:8px;color:#777;margin-top:6px;line-height:1.35}.jStockTap{cursor:pointer}.jStockTap:hover{background:#ffffff07}';document.head.appendChild(style);
+  function money(n){return Number.isFinite(n)?'$'+n.toLocaleString('en-US',{minimumFractionDigits:n>=100?2:2,maximumFractionDigits:n>=1000?2:2}):'—'}
+  function pct(n){if(!Number.isFinite(n))return '—';return `${n>=0?'+':''}${n.toFixed(2)}%`}
+  function marketTile(){return [...document.querySelectorAll('.jTile')].find(x=>/Stocks \+ Crypto/i.test(x.textContent||''))}
+  function renderLoading(){const tile=marketTile();if(!tile)return false;tile.innerHTML='<div class="eyebrow">MARKETS</div><h3>Live Stocks</h3><div class="muted">Loading current quotes…</div>';return true}
+  function render(data){last=data;const tile=marketTile();if(!tile)return false;const rows=(data.quotes||[]).map(q=>`<div class="jStockRow jStockTap" data-symbol="${q.symbol}"><b>${q.symbol}</b><div class="jStockChange ${q.changePct>=0?'jStockUp':'jStockDown'}">${pct(q.changePct)}</div><div class="jStockPrice">${money(q.price)}</div></div>`).join('');tile.innerHTML=`<div class="eyebrow">MARKETS · AUTO REFRESH</div><h3>Live Stocks</h3><div class="jStockGrid">${rows||'<div class="muted">No quotes available.</div>'}</div><div class="jStockMeta">Updated ${new Date(data.updatedAt||Date.now()).toLocaleTimeString([], {hour:'numeric',minute:'2-digit',second:'2-digit'})}. ${data.note||''}</div>`;tile.querySelectorAll('[data-symbol]').forEach(el=>el.onclick=()=>openStock(el.dataset.symbol));return true}
+  async function refresh(){if(!marketTile())return;try{const r=await fetch('/api/stocks?symbols='+encodeURIComponent(SYMBOLS.join(','))+'&t='+Date.now(),{cache:'no-store'});const d=await r.json();if(!r.ok)throw new Error(d.error||'Market feed unavailable');render(d)}catch(e){const tile=marketTile();if(tile)tile.innerHTML='<div class="eyebrow">MARKETS</div><h3>Live Stocks</h3><div class="muted">Market feed unavailable right now. J will retry automatically.</div>'}}
+  function openStock(symbol){const q=last?.quotes?.find(x=>x.symbol===symbol);window.JLiveScreen?.openPanel?.(`${symbol} · LIVE QUOTE`,[{k:'PRICE',v:money(q?.price),s:`${pct(q?.changePct)} today`},{k:'MARKET',v:q?.marketState||'CURRENT',s:q?.exchange||''},{k:'MODE',v:'RESEARCH ONLY',s:'J does not place trades automatically.'}])}
+  function start(){clearInterval(timer);renderLoading();refresh();timer=setInterval(refresh,15000)}
+  const obs=new MutationObserver(()=>{if(document.querySelector('.jDash.on')&&marketTile()){if(!timer)start();else if(last)render(last)}else if(timer){clearInterval(timer);timer=null}});obs.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['class']});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&marketTile())refresh()});
+  window.JLiveStocks={refresh,start,get data(){return last}};
+})();
