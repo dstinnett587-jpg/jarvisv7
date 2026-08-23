@@ -15,16 +15,16 @@
     }catch{}
     return state;
   }
-  async function prepare(){
-    return inspectAudioDevices();
-  }
+  async function prepare(){return inspectAudioDevices()}
   function describe(){
     if(state.bluetoothLikely)return `Bluetooth audio ready${state.inputLabel?' · '+state.inputLabel:''}`;
     return state.inputLabel?`Audio ready · ${state.inputLabel}`:'Audio route ready';
   }
+  function loadExtra(src,id){if(document.getElementById(id))return;const s=document.createElement('script');s.id=id;s.src=src;s.defer=true;document.head.appendChild(s)}
   if(navigator.mediaDevices?.addEventListener)navigator.mediaDevices.addEventListener('devicechange',()=>inspectAudioDevices());
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')inspectAudioDevices()});
   window.addEventListener('load',()=>setTimeout(inspectAudioDevices,700));
   window.JPhoneAudio={prepare,inspect:inspectAudioDevices,describe,state};
-  const s=document.createElement('script');s.src='./j-live-stocks.js?v=20260823-live-1';s.defer=true;document.head.appendChild(s);
+  loadExtra('./j-live-stocks.js?v=20260823-live-2','j-live-stocks-loader');
+  loadExtra('./j-live-theme.js?v=20260823-ui-1','j-live-theme-loader');
 })();
