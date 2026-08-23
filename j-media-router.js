@@ -5,14 +5,22 @@
   const rememberPlatform=p=>{lastPlatform=p;mediaContextUntil=Date.now()+10*60*1000};
   const currentPlatform=()=>Date.now()<mediaContextUntil?lastPlatform:null;
 
+  function normalize(text){return String(text||'').toLowerCase().replace(/[^a-z0-9\s]/g,' ').replace(/\s+/g,' ').trim()}
   function isLocalEditRequest(text){
-    const t=String(text||'').toLowerCase();
-    return /\b(edit|editing|render|cut|mv chaos)\b/.test(t)&&/\b(show|let me see|pull up|open|bring up|play|watch)\b/.test(t);
+    const t=normalize(text);
+    const hasEdit=/\b(edit|editing|render|cut|video|mv chaos)\b/.test(t);
+    const hasShow=/\b(show|see|pull|open|bring|play|watch)\b/.test(t);
+    const exact=/\b(pull (?:the )?(?:edit|video|render|cut) up|pull up (?:the )?(?:edit|video|render|cut)|let me see (?:the |that )?(?:edit|video|render|cut)|show me (?:the |that )?(?:edit|video|render|cut)|open (?:the |that )?(?:edit|video|render|cut))\b/.test(t);
+    return exact||(hasEdit&&hasShow);
+  }
+  function isCloseEditRequest(text){
+    const t=normalize(text);
+    return /\b(close|hide|dismiss)\b.*\b(edit|video|workspace|render|cut)\b/.test(t)||/\bput (?:the )?(?:edit|video|workspace|render|cut) away\b/.test(t);
   }
 
   function parseVideoRequest(text){
     const raw=String(text||'').trim();
-    if(isLocalEditRequest(raw))return null;
+    if(isLocalEditRequest(raw)||isCloseEditRequest(raw))return null;
     const t=raw.toLowerCase();
     const action=/\b(pull up|put on|show me|open|find|search(?: for)?|play)\b/.test(t);
     const explicitVideo=/\b(youtube|yt|video|videos|tiktok|reel|clip)\b/.test(t);
@@ -69,13 +77,15 @@
       base.call(ws,src);
       const state=document.getElementById('wsState');
       if(state)state.textContent='PREVIEW · '+String(meta.name||'LATEST EDIT').toUpperCase();
+      const v=document.getElementById('editPreview');
+      if(v){v.load();v.play().catch(()=>{});}
       window.JSafety?.log?.('video-preview','Loaded latest local J edit: '+(meta.name||'unknown'));
       return true;
     }catch(e){
       const base=ws.__baseOpenVideo||ws.openVideo;
       base.call(ws);
       const empty=document.getElementById('monitorEmpty');
-      if(empty)empty.innerHTML='<strong>VIDEO NOT CONNECTED</strong>Start J Preview Server on this Mac.';
+      if(empty)empty.innerHTML='<strong>VIDEO NOT CONNECTED</strong>J can open the workspace, but the latest render is not reachable yet.';
       console.warn('J local edit preview unavailable',e);
       return false;
     }
@@ -86,10 +96,7 @@
     if(!ws||ws.__latestBridge)return false;
     const base=ws.openVideo.bind(ws);
     ws.__baseOpenVideo=base;
-    ws.openVideo=function(src){
-      if(src)return base(src);
-      return loadLatestEdit();
-    };
+    ws.openVideo=function(src){if(src)return base(src);return loadLatestEdit();};
     ws.openLatestVideo=loadLatestEdit;
     ws.__latestBridge=true;
     return true;
@@ -102,9 +109,34 @@
   const nativeFetch=window.fetch.bind(window);
   window.fetch=async function(input,init){
     const url=typeof input==='string'?input:String(input?.url||'');
+
+    if(/\/api\/stt(?:\?|$)/.test(url)&&String(init?.method||'GET').toUpperCase()==='POST'){
+      const response=await nativeFetch(input,init);
+      try{
+        const data=await response.clone().json();
+        const said=String(data.text||'');
+        if(isLocalEditRequest(said)){
+          loadLatestEdit();
+          setTimeout(()=>window.speak?.('Here it is.',{continueConversation:true}),80);
+          window.JSafety?.log?.('video-preview','Spoken command opened latest local edit');
+          return new Response(JSON.stringify({...data,text:''}),{status:response.status,headers:{'Content-Type':'application/json'}});
+        }
+        if(isCloseEditRequest(said)){
+          window.JWorkspace?.close?.();
+          setTimeout(()=>window.speak?.('Got it.',{continueConversation:true}),80);
+          return new Response(JSON.stringify({...data,text:''}),{status:response.status,headers:{'Content-Type':'application/json'}});
+        }
+      }catch(e){console.warn('J STT edit intercept',e)}
+      return response;
+    }
+
     if(/\/api\/chat(?:\?|$)/.test(url)&&String(init?.method||'GET').toUpperCase()==='POST'){
       try{
         const body=JSON.parse(init?.body||'{}');
+        if(isLocalEditRequest(body.message||'')){
+          const ok=await loadLatestEdit();
+          return new Response(JSON.stringify({reply:ok?'Here it is.':'I opened the workspace, but I could not reach the latest render yet.',continueConversation:true}),{status:200,headers:{'Content-Type':'application/json'}});
+        }
         const req=parseVideoRequest(body.message||'');
         if(req){
           rememberPlatform(req.platform);
@@ -122,7 +154,14 @@
     const oldAsk=window.ask;
     if(typeof oldAsk!=='function'||oldAsk.__jMediaRouter)return false;
     const wrapped=async function(text){
-      if(isLocalEditRequest(text))return oldAsk(text);
+      if(isLocalEditRequest(text)){
+        const ok=await loadLatestEdit();
+        return window.speak?.(ok?'Here it is.':'I opened the workspace, but I could not reach the latest render yet.',{continueConversation:true});
+      }
+      if(isCloseEditRequest(text)){
+        window.JWorkspace?.close?.();
+        return window.speak?.('Got it.',{continueConversation:true});
+      }
       const req=parseVideoRequest(text);
       if(req){
         rememberPlatform(req.platform);
@@ -139,5 +178,5 @@
   }
 
   install();
-  window.JMediaRouter={parseVideoRequest,targetUrl,reserveMediaTab,openInMediaTab,install,isLocalEditRequest,loadLatestEdit};
+  window.JMediaRouter={parseVideoRequest,targetUrl,reserveMediaTab,openInMediaTab,install,isLocalEditRequest,isCloseEditRequest,loadLatestEdit};
 })();
