@@ -17,7 +17,7 @@
   }
   async function checkHealth(){
     try{
-      const r=await fetch('/api/health?jr='+Date.now(),{cache:'no-store',headers:{'Cache-Control':'no-cache'}});
+      const r=await fetch('/api/health?jr='+Date.now(),{cache:'no-store',credentials:'include',headers:{'Cache-Control':'no-cache'}});
       const d=await r.json();state.health=d;state.checks++;
       core.textContent=d?.ok?'ONLINE':'DEGRADED';
       if(!d?.ok)setError('J core health check is degraded.');else if(!state.lastError.includes('command')&&!state.lastError.includes('Website build'))setError('');
@@ -34,9 +34,10 @@
     try{
       command.textContent='BUILDING';
       window.JLiveScreen?.openBuilder?.(/maisonvere/i.test(details)?'MAISONVERE':'WEBSITE');
-      const r=await fetch('/api/build-site',{method:'POST',headers:{'Content-Type':'application/json','X-J-Command-Id':d.command_id},body:JSON.stringify({business:details,command_id:d.command_id})});
+      const endpoint=new URL('/api/build-site',window.location.href).href;
+      const r=await fetch(endpoint,{method:'POST',credentials:'include',redirect:'follow',cache:'no-store',headers:{'Content-Type':'application/json','Cache-Control':'no-cache','X-J-Command-Id':d.command_id},body:JSON.stringify({business:details,command_id:d.command_id})});
       const data=await r.json().catch(()=>({}));
-      window.dispatchEvent(new CustomEvent('j-build-http',{detail:{command_id:d.command_id,status:r.status,ok:r.ok}}));
+      window.dispatchEvent(new CustomEvent('j-build-http',{detail:{command_id:d.command_id,status:r.status,ok:r.ok,url:r.url}}));
       if(!r.ok){window.JLiveScreen?.failBuilder?.(data?.error||`Site generation failed (${r.status})`);return}
       if(data?.html){window.JLiveScreen?.finishBuilder?.(data.html);command.textContent='BUILD OK'}
       else window.JLiveScreen?.failBuilder?.('Site generator returned no HTML');
@@ -44,7 +45,7 @@
   }
   async function checkCommand(){
     try{
-      const r=await fetch(COMMAND_SOURCE+'?jr='+Date.now(),{cache:'no-store',headers:{'Cache-Control':'no-cache'}});
+      const r=await fetch(COMMAND_SOURCE+'?jr='+Date.now(),{cache:'no-store',credentials:'include',headers:{'Cache-Control':'no-cache'}});
       if(!r.ok)throw new Error('command source '+r.status);
       const d=await r.json();
       remote.textContent='ONLINE';
