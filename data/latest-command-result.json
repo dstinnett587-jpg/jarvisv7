@@ -1,14 +1,14 @@
 {
-  "command_id": "chatgpt-build-maisonvere-20260825-001",
+  "command_id": "chatgpt-build-maisonvere-20260825-002",
   "action": "build_site",
   "status": "queued",
-  "created_at": "2026-08-25T05:40:00Z",
+  "created_at": "2026-08-25T05:55:00Z",
   "display": {
     "source": "chatgpt",
     "label": "Build Maisonvere website"
   },
   "title": "Maisonvere Website Build",
-  "message": "Build Maisonvere on J's center canvas.",
+  "message": "Build Maisonvere on J's center canvas after reliability upgrade.",
   "payload": {
     "business": "Maisonvere is a streetwear clothing brand. Create a dark, raw, luxury-underground, mobile-first fashion storefront concept. Use a mostly black, white, and grey visual direction with strong editorial typography and gritty high-fashion energy. Include a bold Maisonvere hero, featured collection/product grid, brand story section, lookbook/editorial section, newsletter signup, and shopping calls to action. Keep product details neutral where exact products or prices are not supplied. Do not invent reviews, sales numbers, addresses, collaborations, certifications, or claims. Make it feel premium and fashion-forward rather than like a generic ecommerce template."
   }
