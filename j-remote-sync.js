@@ -11,41 +11,32 @@
   card.querySelector('button').addEventListener('click',()=>card.classList.remove('open'));
   const status=card.querySelector('.jRemoteStatus'),body=card.querySelector('.jRemoteBody');
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  function youtubeInfo(u){try{const x=new URL(String(u));if(x.hostname==='www.youtube.com'&&x.pathname.startsWith('/embed/')){const id=x.pathname.split('/embed/')[1].split('/')[0];return id?{embed:`https://www.youtube.com/embed/${encodeURIComponent(id)}`,watch:`https://www.youtube.com/watch?v=${encodeURIComponent(id)}`} : null;}if((x.hostname==='www.youtube.com'||x.hostname==='youtube.com')&&x.pathname==='/watch'){const id=x.searchParams.get('v');return id?{embed:`https://www.youtube.com/embed/${encodeURIComponent(id)}`,watch:`https://www.youtube.com/watch?v=${encodeURIComponent(id)}`} : null;}return null}catch{return null}}
-  function openNewTab(url){try{const w=window.open(url,'_blank','noopener,noreferrer');return !!w}catch{return false}}
-  function show(d){
-    card.classList.add('open');
-    if(MAC_ACTIONS.has(d.action)){
-      status.textContent=d.status==='failed'?'Sent to Mac Agent':'Mac Agent command';
-      body.innerHTML=`<div class="jRemoteLead"><b>J · MAC AGENT</b><small>${esc(d.display?.label||d.message||'Command sent to Mac.')}</small></div>`;
-      return;
-    }
-    status.textContent=d.status==='failed'?'Remote task failed':d.status==='complete'?'Remote task complete':'Remote task running';
-    if(d.status==='failed'){
-      const unsupported=/unsupported command/i.test(String(d.error||''));
-      if(unsupported){status.textContent='Sent to Mac Agent';body.innerHTML='<div class="jRemoteLead"><b>J · MAC AGENT</b><small>This action is handled locally on your Mac.</small></div>';return;}
-      body.innerHTML=`<div class="jRemoteLead"><b>ERROR</b><small>${esc(d.error||'Unknown error')}</small></div>`;return;
-    }
-    let html='';
-    if(Array.isArray(d.leads)){
-      html=`<div class="jRemoteLead"><b>${esc(d.title||'J REMOTE SEARCH')}</b><small>${esc(d.location||'')} · ${d.count||d.leads.length} results</small></div>`+d.leads.map((x,i)=>`<div class="jRemoteLead"><b>${i+1}. ${esc(x.name)}</b><small>${esc(String(x.category||'business').replaceAll('_',' '))}${x.address?' · '+esc(x.address):''}${x.phone?' · '+esc(x.phone):''}${x.website?' · website listed':''}</small></div>`).join('');
-    } else if(Array.isArray(d.items)){
-      html=`<div class="jRemoteLead"><b>${esc(d.title||'J REMOTE RESEARCH')}</b><small>${esc(d.message||'')} · ${d.count||d.items.length} results</small></div>`+d.items.map((x,i)=>`<div class="jRemoteLead"><b>${i+1}. ${esc(x.name||x.title||'Result')}</b><small>${esc(x.type||x.category||'')}${x.reason?' · '+esc(x.reason):''}${x.note?' · '+esc(x.note):''}</small></div>`).join('');
-    } else html=`<div class="jRemoteLead"><b>${esc(d.message||'J remote bridge online')}</b></div>`;
-    const yt=youtubeInfo(d.video_url||d.url||'');
-    if(yt){html+=`<iframe class="jRemoteVideo" src="${esc(yt.embed)}" title="J video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><a class="jRemoteOpen" target="_blank" rel="noopener noreferrer" href="${esc(yt.watch)}">OPEN VIDEO IN NEW TAB</a>`;}
-    body.innerHTML=html;
-    if(yt){const opened=openNewTab(yt.watch);status.textContent=opened?'Opened video in a new tab':'Video ready — click OPEN VIDEO IN NEW TAB if your browser blocked the automatic tab.';}
-    window.JSafety?.log?.('remote-command',`${d.action||'task'} ${d.status||''}`);
-  }
-  async function poll(){
-    if(!polling)return;
+  function youtubeInfo(u){try{const x=new URL(String(u));if(x.hostname==='www.youtube.com'&&x.pathname.startsWith('/embed/')){const id=x.pathname.split('/embed/')[1].split('/')[0];return id?{embed:`https://www.youtube.com/embed/${encodeURIComponent(id)}`,watch:`https://www.youtube.com/watch?v=${encodeURIComponent(id)}`}:null}if((x.hostname==='www.youtube.com'||x.hostname==='youtube.com')&&x.pathname==='/watch'){const id=x.searchParams.get('v');return id?{embed:`https://www.youtube.com/embed/${encodeURIComponent(id)}`,watch:`https://www.youtube.com/watch?v=${encodeURIComponent(id)}`}:null}return null}catch{return null}}
+  function openNewTab(url){try{return !!window.open(url,'_blank','noopener,noreferrer')}catch{return false}}
+  async function runBuild(d){
+    const details=String(d.payload?.business||d.business||'').trim();
+    if(!details)return;
+    card.classList.remove('open');
     try{
-      const r=await fetch(SOURCE+'?t='+Date.now(),{cache:'no-store',headers:{'Cache-Control':'no-cache'}});if(!r.ok)throw new Error('sync unavailable');const d=await r.json();
-      if(d.command_id&&d.command_id!==lastId){lastId=d.command_id;show(d);if(d.status==='complete'){const n=Array.isArray(d.leads)?d.leads.length:Array.isArray(d.items)?d.items.length:0;if(n)window.speak?.(`Remote task complete. I found ${n} results.`,{continueConversation:false});}}
-    }catch(e){console.warn('J remote sync',e)}
-    setTimeout(poll,1000);
+      window.JLiveScreen?.openBuilder?.(/maisonvere/i.test(details)?'MAISONVERE':'WEBSITE');
+      window.dispatchEvent(new CustomEvent('j-command',{detail:{source:'chatgpt',action:'build_site',text:`Build website: ${details.slice(0,240)}`}}));
+      const r=await fetch('/api/build-site',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({business:details})});
+      const data=await r.json().catch(()=>({}));
+      if(!r.ok){window.JLiveScreen?.failBuilder?.(data?.error||'Site generation failed');return}
+      if(data?.html)window.JLiveScreen?.finishBuilder?.(data.html);
+    }catch(e){window.JLiveScreen?.failBuilder?.(e?.message||'Remote website build failed')}
   }
+  function show(d){
+    if(d.action==='build_site'){runBuild(d);return}
+    card.classList.add('open');
+    if(MAC_ACTIONS.has(d.action)){status.textContent=d.status==='failed'?'Sent to Mac Agent':'Mac Agent command';body.innerHTML=`<div class="jRemoteLead"><b>J · MAC AGENT</b><small>${esc(d.display?.label||d.message||'Command sent to Mac.')}</small></div>`;return}
+    status.textContent=d.status==='failed'?'Remote task failed':d.status==='complete'?'Remote task complete':'Remote task running';
+    if(d.status==='failed'){const unsupported=/unsupported command/i.test(String(d.error||''));if(unsupported){status.textContent='Sent to Mac Agent';body.innerHTML='<div class="jRemoteLead"><b>J · MAC AGENT</b><small>This action is handled locally on your Mac.</small></div>';return}body.innerHTML=`<div class="jRemoteLead"><b>ERROR</b><small>${esc(d.error||'Unknown error')}</small></div>`;return}
+    let html='';
+    if(Array.isArray(d.leads)){html=`<div class="jRemoteLead"><b>${esc(d.title||'J REMOTE SEARCH')}</b><small>${esc(d.location||'')} · ${d.count||d.leads.length} results</small></div>`+d.leads.map((x,i)=>`<div class="jRemoteLead"><b>${i+1}. ${esc(x.name)}</b><small>${esc(String(x.category||'business').replaceAll('_',' '))}${x.address?' · '+esc(x.address):''}${x.phone?' · '+esc(x.phone):''}${x.website?' · website listed':''}</small></div>`).join('')}else if(Array.isArray(d.items)){html=`<div class="jRemoteLead"><b>${esc(d.title||'J REMOTE RESEARCH')}</b><small>${esc(d.message||'')} · ${d.count||d.items.length} results</small></div>`+d.items.map((x,i)=>`<div class="jRemoteLead"><b>${i+1}. ${esc(x.name||x.title||'Result')}</b><small>${esc(x.type||x.category||'')}${x.reason?' · '+esc(x.reason):''}${x.note?' · '+esc(x.note):''}</small></div>`).join('')}else html=`<div class="jRemoteLead"><b>${esc(d.message||'J remote bridge online')}</b></div>`;
+    const yt=youtubeInfo(d.video_url||d.url||'');if(yt){html+=`<iframe class="jRemoteVideo" src="${esc(yt.embed)}" title="J video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><a class="jRemoteOpen" target="_blank" rel="noopener noreferrer" href="${esc(yt.watch)}">OPEN VIDEO IN NEW TAB</a>`}body.innerHTML=html;if(yt){const opened=openNewTab(yt.watch);status.textContent=opened?'Opened video in a new tab':'Video ready — click OPEN VIDEO IN NEW TAB if your browser blocked the automatic tab.'}window.JSafety?.log?.('remote-command',`${d.action||'task'} ${d.status||''}`)
+  }
+  async function poll(){if(!polling)return;try{const r=await fetch(SOURCE+'?t='+Date.now(),{cache:'no-store',headers:{'Cache-Control':'no-cache'}});if(!r.ok)throw new Error('sync unavailable');const d=await r.json();if(d.command_id&&d.command_id!==lastId){lastId=d.command_id;show(d);if(d.status==='complete'&&d.action!=='build_site'){const n=Array.isArray(d.leads)?d.leads.length:Array.isArray(d.items)?d.items.length:0;if(n)window.speak?.(`Remote task complete. I found ${n} results.`,{continueConversation:false})}}}catch(e){console.warn('J remote sync',e)}setTimeout(poll,1000)}
   window.JRemoteSync={show,poll,stop(){polling=false},start(){if(polling)return;polling=true;poll()}};
   poll();
 })();
