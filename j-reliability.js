@@ -1,7 +1,7 @@
 (()=>{
   if(window.JReliability)return;
   const COMMAND_SOURCE='/data/latest-command-result.json';
-  const state={health:null,lastCommand:null,lastCommandAt:0,lastError:'',checks:0,bridgeRestarts:0};
+  const state={health:null,lastCommand:null,lastCommandAt:0,lastError:'',checks:0,bridgeRestarts:0,lastExecutedCommandId:''};
   const style=document.createElement('style');
   style.textContent=`.jReliability{position:fixed;left:14px;top:14px;z-index:120;min-width:165px;border:1px solid #ffffff22;border-radius:13px;background:#070707e8;color:#fff;padding:9px 10px;backdrop-filter:blur(16px);font:10px/1.35 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;box-shadow:0 10px 30px #0008}.jReliability b{font-size:9px;letter-spacing:.13em}.jReliability .jrLine{display:flex;justify-content:space-between;gap:12px;margin-top:5px;color:#8d8d8d}.jReliability .jrLine strong{color:#fff}.jReliability.bad{border-color:#ffffff44}.jReliability .jrErr{display:none;margin-top:6px;color:#bbb;max-width:250px}.jReliability.bad .jrErr{display:block}`;
   document.head.appendChild(style);
@@ -20,8 +20,27 @@
       const r=await fetch('/api/health?jr='+Date.now(),{cache:'no-store',headers:{'Cache-Control':'no-cache'}});
       const d=await r.json();state.health=d;state.checks++;
       core.textContent=d?.ok?'ONLINE':'DEGRADED';
-      if(!d?.ok)setError('J core health check is degraded.');else if(!state.lastError.includes('command'))setError('');
+      if(!d?.ok)setError('J core health check is degraded.');else if(!state.lastError.includes('command')&&!state.lastError.includes('Website build'))setError('');
     }catch(e){core.textContent='OFFLINE';setError('J core health check failed. '+(e?.message||''))}
+  }
+  async function executeBuild(d){
+    if(!d?.command_id||d.action!=='build_site'||d.status!=='queued')return;
+    window.__J_BUILD_EXEC_IDS=window.__J_BUILD_EXEC_IDS||new Set();
+    if(window.__J_BUILD_EXEC_IDS.has(d.command_id))return;
+    window.__J_BUILD_EXEC_IDS.add(d.command_id);
+    state.lastExecutedCommandId=d.command_id;
+    const details=String(d.payload?.business||d.business||'').trim();
+    if(!details)return;
+    try{
+      command.textContent='BUILDING';
+      window.JLiveScreen?.openBuilder?.(/maisonvere/i.test(details)?'MAISONVERE':'WEBSITE');
+      const r=await fetch('/api/build-site',{method:'POST',headers:{'Content-Type':'application/json','X-J-Command-Id':d.command_id},body:JSON.stringify({business:details,command_id:d.command_id})});
+      const data=await r.json().catch(()=>({}));
+      window.dispatchEvent(new CustomEvent('j-build-http',{detail:{command_id:d.command_id,status:r.status,ok:r.ok}}));
+      if(!r.ok){window.JLiveScreen?.failBuilder?.(data?.error||`Site generation failed (${r.status})`);return}
+      if(data?.html){window.JLiveScreen?.finishBuilder?.(data.html);command.textContent='BUILD OK'}
+      else window.JLiveScreen?.failBuilder?.('Site generator returned no HTML');
+    }catch(e){window.dispatchEvent(new CustomEvent('j-build-http',{detail:{command_id:d.command_id,status:0,ok:false,error:e?.message||String(e)}}));window.JLiveScreen?.failBuilder?.(e?.message||'Remote website build failed')}
   }
   async function checkCommand(){
     try{
@@ -30,14 +49,14 @@
       const d=await r.json();
       remote.textContent='ONLINE';
       if(state.lastError.includes('Remote command channel'))setError('');
-      if(d?.command_id){state.lastCommand=d;state.lastCommandAt=Date.now();command.textContent=String(d.status||'seen').toUpperCase();}
+      if(d?.command_id){state.lastCommand=d;state.lastCommandAt=Date.now();command.textContent=String(d.status||'seen').toUpperCase();await executeBuild(d)}
       else command.textContent='WAITING';
     }catch(e){remote.textContent='OFFLINE';setError('Remote command channel unavailable. '+(e?.message||''))}
   }
-  async function tick(){ensureBridges();await Promise.all([checkHealth(),checkCommand()]);setTimeout(tick,5000)}
+  async function tick(){ensureBridges();await checkHealth();await checkCommand();setTimeout(tick,5000)}
   window.addEventListener('j-build-http',e=>{const d=e.detail||{};command.textContent=d.ok?'BUILD OK':d.status?`HTTP ${d.status}`:'BUILD ERR';if(!d.ok)setError('Website build request failed. '+(d.error||d.status||''))});
   window.addEventListener('error',e=>{const m=String(e?.message||'');if(m)setError('JS error: '+m.slice(0,140))});
   window.addEventListener('unhandledrejection',e=>{const m=String(e?.reason?.message||e?.reason||'');if(m)setError('Async error: '+m.slice(0,140))});
-  window.JReliability={state,checkHealth,checkCommand,ensureBridges,setError};
+  window.JReliability={state,checkHealth,checkCommand,ensureBridges,setError,executeBuild};
   setTimeout(tick,800);
 })();
