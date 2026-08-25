@@ -1,7 +1,6 @@
 (()=>{
   let lastId='';
   let polling=true;
-  // Same-origin command feed avoids raw GitHub branch-path/CORS failures and is refreshed on every deployment.
   const SOURCE='./data/latest-command-result.json';
   const MAC_ACTIONS=new Set(['open_url','open_app','focus_app','type_text','quit_app','run_shortcut']);
   const style=document.createElement('style');
@@ -20,12 +19,20 @@
     card.classList.remove('open');
     try{
       window.JLiveScreen?.openBuilder?.(/maisonvere/i.test(details)?'MAISONVERE':'WEBSITE');
-      window.dispatchEvent(new CustomEvent('j-command',{detail:{source:'chatgpt',action:'build_site',text:`Build website: ${details.slice(0,240)}`}}));
-      const r=await fetch('/api/build-site',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({business:details})});
+      const endpoint=new URL('/api/build-site',window.location.href);
+      endpoint.searchParams.set('business',details);
+      endpoint.searchParams.set('command_id',String(d.command_id||''));
+      endpoint.searchParams.set('_j',String(Date.now()));
+      const r=await fetch(endpoint.href,{method:'GET',credentials:'include',cache:'no-store'});
       const data=await r.json().catch(()=>({}));
-      if(!r.ok){window.JLiveScreen?.failBuilder?.(data?.error||'Site generation failed');return}
+      window.dispatchEvent(new CustomEvent('j-build-http',{detail:{command_id:d.command_id||'',status:r.status,ok:r.ok,url:r.url,source:'remote-sync'}}));
+      if(!r.ok){window.JLiveScreen?.failBuilder?.(data?.error||`Site generation failed (${r.status})`);return}
       if(data?.html)window.JLiveScreen?.finishBuilder?.(data.html);
-    }catch(e){window.JLiveScreen?.failBuilder?.(e?.message||'Remote website build failed')}
+      else window.JLiveScreen?.failBuilder?.('Site generator returned no HTML');
+    }catch(e){
+      window.dispatchEvent(new CustomEvent('j-build-http',{detail:{command_id:d.command_id||'',status:0,ok:false,error:e?.message||String(e),source:'remote-sync'}}));
+      window.JLiveScreen?.failBuilder?.(e?.message||'Remote website build failed')
+    }
   }
   function show(d){
     if(d.action==='build_site'){runBuild(d);return}
@@ -37,8 +44,8 @@
     if(Array.isArray(d.leads)){html=`<div class="jRemoteLead"><b>${esc(d.title||'J REMOTE SEARCH')}</b><small>${esc(d.location||'')} · ${d.count||d.leads.length} results</small></div>`+d.leads.map((x,i)=>`<div class="jRemoteLead"><b>${i+1}. ${esc(x.name)}</b><small>${esc(String(x.category||'business').replaceAll('_',' '))}${x.address?' · '+esc(x.address):''}${x.phone?' · '+esc(x.phone):''}${x.website?' · website listed':''}</small></div>`).join('')}else if(Array.isArray(d.items)){html=`<div class="jRemoteLead"><b>${esc(d.title||'J REMOTE RESEARCH')}</b><small>${esc(d.message||'')} · ${d.count||d.items.length} results</small></div>`+d.items.map((x,i)=>`<div class="jRemoteLead"><b>${i+1}. ${esc(x.name||x.title||'Result')}</b><small>${esc(x.type||x.category||'')}${x.reason?' · '+esc(x.reason):''}${x.note?' · '+esc(x.note):''}</small></div>`).join('')}else html=`<div class="jRemoteLead"><b>${esc(d.message||'J remote bridge online')}</b></div>`;
     const yt=youtubeInfo(d.video_url||d.url||'');if(yt){html+=`<iframe class="jRemoteVideo" src="${esc(yt.embed)}" title="J video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><a class="jRemoteOpen" target="_blank" rel="noopener noreferrer" href="${esc(yt.watch)}">OPEN VIDEO IN NEW TAB</a>`}body.innerHTML=html;if(yt){const opened=openNewTab(yt.watch);status.textContent=opened?'Opened video in a new tab':'Video ready — click OPEN VIDEO IN NEW TAB if your browser blocked the automatic tab.'}window.JSafety?.log?.('remote-command',`${d.action||'task'} ${d.status||''}`)
   }
-  async function poll(){if(!polling)return;try{const r=await fetch(SOURCE+'?t='+Date.now(),{cache:'no-store',headers:{'Cache-Control':'no-cache'}});if(!r.ok)throw new Error('sync unavailable');const d=await r.json();window.dispatchEvent(new CustomEvent('j-remote-health',{detail:{ok:true,commandId:d.command_id||'',action:d.action||'',status:d.status||''}}));if(d.command_id&&d.command_id!==lastId){lastId=d.command_id;show(d);if(d.status==='complete'&&d.action!=='build_site'){const n=Array.isArray(d.leads)?d.leads.length:Array.isArray(d.items)?d.items.length:0;if(n)window.speak?.(`Remote task complete. I found ${n} results.`,{continueConversation:false})}}}catch(e){window.dispatchEvent(new CustomEvent('j-remote-health',{detail:{ok:false,error:e?.message||'sync unavailable'}}));console.warn('J remote sync',e)}setTimeout(poll,1000)}
-  window.JRemoteSync={show,poll,stop(){polling=false},start(){if(polling)return;polling=true;poll()}};
+  async function poll(){if(!polling)return;try{const r=await fetch(SOURCE+'?t='+Date.now(),{cache:'no-store',credentials:'include',headers:{'Cache-Control':'no-cache'}});if(!r.ok)throw new Error('sync unavailable');const d=await r.json();window.dispatchEvent(new CustomEvent('j-remote-health',{detail:{ok:true,commandId:d.command_id||'',action:d.action||'',status:d.status||''}}));if(d.command_id&&d.command_id!==lastId){lastId=d.command_id;show(d);if(d.status==='complete'&&d.action!=='build_site'){const n=Array.isArray(d.leads)?d.leads.length:Array.isArray(d.items)?d.items.length:0;if(n)window.speak?.(`Remote task complete. I found ${n} results.`,{continueConversation:false})}}}catch(e){window.dispatchEvent(new CustomEvent('j-remote-health',{detail:{ok:false,error:e?.message||'sync unavailable'}}));console.warn('J remote sync',e)}setTimeout(poll,1000)}
+  window.JRemoteSync={show,poll,runBuild,stop(){polling=false},start(){if(polling)return;polling=true;poll()}};
   poll();
   function loadCritical(src,globalName){if(globalName&&window[globalName])return;if(document.querySelector(`script[data-j-critical="${src}"]`))return;const s=document.createElement('script');s.src=`./${src}?boot=${Date.now()}`;s.async=false;s.dataset.jCritical=src;s.onerror=()=>console.error('J critical module failed',src);document.head.appendChild(s)}
   loadCritical('j-chatgpt-bridge.js','JChatGPTBridge');
