@@ -11,53 +11,13 @@
   document.body.appendChild(box);
   const core=box.querySelector('#jrCore'),remote=box.querySelector('#jrRemote'),command=box.querySelector('#jrCommand'),err=box.querySelector('#jrErr');
   function setError(msg){state.lastError=String(msg||'');err.textContent=state.lastError;box.classList.toggle('bad',!!state.lastError)}
-  function ensureBridges(){
-    if(window.JRemoteSync&&typeof window.JRemoteSync.start==='function'){try{window.JRemoteSync.start()}catch{}}
-    if(window.JChatGPTBridge&&typeof window.JChatGPTBridge.start==='function'){try{window.JChatGPTBridge.start()}catch{}}
-  }
-  async function checkHealth(){
-    try{
-      const r=await fetch('/api/health?jr='+Date.now(),{cache:'no-store',credentials:'include',headers:{'Cache-Control':'no-cache'}});
-      const d=await r.json();state.health=d;state.checks++;
-      core.textContent=d?.ok?'ONLINE':'DEGRADED';
-      if(!d?.ok)setError('J core health check is degraded.');else if(!state.lastError.includes('command')&&!state.lastError.includes('Website build'))setError('');
-    }catch(e){core.textContent='OFFLINE';setError('J core health check failed. '+(e?.message||''))}
-  }
-  async function executeBuild(d){
-    if(!d?.command_id||d.action!=='build_site'||d.status!=='queued')return;
-    window.__J_BUILD_EXEC_IDS=window.__J_BUILD_EXEC_IDS||new Set();
-    if(window.__J_BUILD_EXEC_IDS.has(d.command_id))return;
-    window.__J_BUILD_EXEC_IDS.add(d.command_id);
-    state.lastExecutedCommandId=d.command_id;
-    const details=String(d.payload?.business||d.business||'').trim();
-    if(!details)return;
-    try{
-      command.textContent='BUILDING';
-      window.JLiveScreen?.openBuilder?.(/maisonvere/i.test(details)?'MAISONVERE':'WEBSITE');
-      const endpoint=new URL('/api/build-site',window.location.href).href;
-      const r=await fetch(endpoint,{method:'POST',credentials:'include',redirect:'follow',cache:'no-store',headers:{'Content-Type':'application/json','Cache-Control':'no-cache','X-J-Command-Id':d.command_id},body:JSON.stringify({business:details,command_id:d.command_id})});
-      const data=await r.json().catch(()=>({}));
-      window.dispatchEvent(new CustomEvent('j-build-http',{detail:{command_id:d.command_id,status:r.status,ok:r.ok,url:r.url}}));
-      if(!r.ok){window.JLiveScreen?.failBuilder?.(data?.error||`Site generation failed (${r.status})`);return}
-      if(data?.html){window.JLiveScreen?.finishBuilder?.(data.html);command.textContent='BUILD OK'}
-      else window.JLiveScreen?.failBuilder?.('Site generator returned no HTML');
-    }catch(e){window.dispatchEvent(new CustomEvent('j-build-http',{detail:{command_id:d.command_id,status:0,ok:false,error:e?.message||String(e)}}));window.JLiveScreen?.failBuilder?.(e?.message||'Remote website build failed')}
-  }
-  async function checkCommand(){
-    try{
-      const r=await fetch(COMMAND_SOURCE+'?jr='+Date.now(),{cache:'no-store',credentials:'include',headers:{'Cache-Control':'no-cache'}});
-      if(!r.ok)throw new Error('command source '+r.status);
-      const d=await r.json();
-      remote.textContent='ONLINE';
-      if(state.lastError.includes('Remote command channel'))setError('');
-      if(d?.command_id){state.lastCommand=d;state.lastCommandAt=Date.now();command.textContent=String(d.status||'seen').toUpperCase();await executeBuild(d)}
-      else command.textContent='WAITING';
-    }catch(e){remote.textContent='OFFLINE';setError('Remote command channel unavailable. '+(e?.message||''))}
-  }
+  function ensureBridges(){if(window.JRemoteSync&&typeof window.JRemoteSync.start==='function'){try{window.JRemoteSync.start()}catch{}}if(window.JChatGPTBridge&&typeof window.JChatGPTBridge.start==='function'){try{window.JChatGPTBridge.start()}catch{}}}
+  async function checkHealth(){try{const r=await fetch('/api/health?jr='+Date.now(),{cache:'no-store',credentials:'include',headers:{'Cache-Control':'no-cache'}});const d=await r.json();state.health=d;state.checks++;core.textContent=d?.ok?'ONLINE':'DEGRADED';if(!d?.ok)setError('J core health check is degraded.');else if(!state.lastError.includes('command')&&!state.lastError.includes('Website build'))setError('')}catch(e){core.textContent='OFFLINE';setError('J core health check failed. '+(e?.message||''))}}
+  async function executeBuild(d){if(!d?.command_id||d.action!=='build_site'||d.status!=='queued')return;window.__J_BUILD_EXEC_IDS=window.__J_BUILD_EXEC_IDS||new Set();if(window.__J_BUILD_EXEC_IDS.has(d.command_id))return;window.__J_BUILD_EXEC_IDS.add(d.command_id);state.lastExecutedCommandId=d.command_id;const details=String(d.payload?.business||d.business||'').trim();if(!details)return;try{command.textContent='BUILDING';window.JLiveScreen?.openBuilder?.(/maisonvere/i.test(details)?'MAISONVERE':'WEBSITE');const endpoint='/api/build-site?business='+encodeURIComponent(details)+'&command_id='+encodeURIComponent(d.command_id)+'&t='+Date.now();const r=await fetch(endpoint,{method:'GET',credentials:'include',redirect:'follow',cache:'no-store',headers:{'Cache-Control':'no-cache'}});const data=await r.json().catch(()=>({}));window.dispatchEvent(new CustomEvent('j-build-http',{detail:{command_id:d.command_id,status:r.status,ok:r.ok,url:r.url}}));if(!r.ok){window.JLiveScreen?.failBuilder?.(data?.error||`Site generation failed (${r.status})`);return}if(data?.html){window.JLiveScreen?.finishBuilder?.(data.html);command.textContent='BUILD OK'}else window.JLiveScreen?.failBuilder?.('Site generator returned no HTML')}catch(e){window.dispatchEvent(new CustomEvent('j-build-http',{detail:{command_id:d.command_id,status:0,ok:false,error:e?.message||String(e)}}));window.JLiveScreen?.failBuilder?.(e?.message||'Remote website build failed')}}
+  async function checkCommand(){try{const r=await fetch(COMMAND_SOURCE+'?jr='+Date.now(),{cache:'no-store',credentials:'include',headers:{'Cache-Control':'no-cache'}});if(!r.ok)throw new Error('command source '+r.status);const d=await r.json();remote.textContent='ONLINE';if(state.lastError.includes('Remote command channel'))setError('');if(d?.command_id){state.lastCommand=d;state.lastCommandAt=Date.now();command.textContent=String(d.status||'seen').toUpperCase();await executeBuild(d)}else command.textContent='WAITING'}catch(e){remote.textContent='OFFLINE';setError('Remote command channel unavailable. '+(e?.message||''))}}
   async function tick(){ensureBridges();await checkHealth();await checkCommand();setTimeout(tick,5000)}
   window.addEventListener('j-build-http',e=>{const d=e.detail||{};command.textContent=d.ok?'BUILD OK':d.status?`HTTP ${d.status}`:'BUILD ERR';if(!d.ok)setError('Website build request failed. '+(d.error||d.status||''))});
   window.addEventListener('error',e=>{const m=String(e?.message||'');if(m)setError('JS error: '+m.slice(0,140))});
   window.addEventListener('unhandledrejection',e=>{const m=String(e?.reason?.message||e?.reason||'');if(m)setError('Async error: '+m.slice(0,140))});
-  window.JReliability={state,checkHealth,checkCommand,ensureBridges,setError,executeBuild};
-  setTimeout(tick,800);
+  window.JReliability={state,checkHealth,checkCommand,ensureBridges,setError,executeBuild};setTimeout(tick,800);
 })();
