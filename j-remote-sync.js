@@ -39,4 +39,18 @@
   async function poll(){if(!polling)return;try{const r=await fetch(SOURCE+'?t='+Date.now(),{cache:'no-store',headers:{'Cache-Control':'no-cache'}});if(!r.ok)throw new Error('sync unavailable');const d=await r.json();if(d.command_id&&d.command_id!==lastId){lastId=d.command_id;show(d);if(d.status==='complete'&&d.action!=='build_site'){const n=Array.isArray(d.leads)?d.leads.length:Array.isArray(d.items)?d.items.length:0;if(n)window.speak?.(`Remote task complete. I found ${n} results.`,{continueConversation:false})}}}catch(e){console.warn('J remote sync',e)}setTimeout(poll,1000)}
   window.JRemoteSync={show,poll,stop(){polling=false},start(){if(polling)return;polling=true;poll()}};
   poll();
+
+  function loadCritical(src,globalName){
+    if(globalName&&window[globalName])return;
+    if(document.querySelector(`script[data-j-critical="${src}"]`))return;
+    const s=document.createElement('script');
+    s.src=`./${src}?boot=${Date.now()}`;
+    s.async=false;
+    s.dataset.jCritical=src;
+    s.onerror=()=>console.error('J critical module failed',src);
+    document.head.appendChild(s);
+  }
+  loadCritical('j-chatgpt-bridge.js','JChatGPTBridge');
+  loadCritical('j-reliability.js','JReliability');
+  loadCritical('j-meta-ads.js','JMetaAds');
 })();
