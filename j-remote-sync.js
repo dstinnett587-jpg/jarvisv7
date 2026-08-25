@@ -13,12 +13,15 @@
   const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   function youtubeInfo(u){try{const x=new URL(String(u));if(x.hostname==='www.youtube.com'&&x.pathname.startsWith('/embed/')){const id=x.pathname.split('/embed/')[1].split('/')[0];return id?{embed:`https://www.youtube.com/embed/${encodeURIComponent(id)}`,watch:`https://www.youtube.com/watch?v=${encodeURIComponent(id)}`}:null}if((x.hostname==='www.youtube.com'||x.hostname==='youtube.com')&&x.pathname==='/watch'){const id=x.searchParams.get('v');return id?{embed:`https://www.youtube.com/embed/${encodeURIComponent(id)}`,watch:`https://www.youtube.com/watch?v=${encodeURIComponent(id)}`}:null}return null}catch{return null}}
   function openNewTab(url){try{return !!window.open(url,'_blank','noopener,noreferrer')}catch{return false}}
+  function loadCritical(src,globalName,onload){if(globalName&&window[globalName]){onload?.();return}let s=document.querySelector(`script[data-j-critical="${src}"]`);if(s){if(onload)s.addEventListener('load',onload,{once:true});return}s=document.createElement('script');s.src=`./${src}?boot=${Date.now()}`;s.async=false;s.dataset.jCritical=src;if(onload)s.addEventListener('load',onload,{once:true});s.onerror=()=>console.error('J critical module failed',src);document.head.appendChild(s)}
+  function handoffBuild(d){
+    card.classList.remove('open');
+    window.dispatchEvent(new CustomEvent('j-command-seen',{detail:{source:'remote-sync',command_id:d.command_id||'',action:d.action,status:d.status||''}}));
+    const run=()=>{try{window.JChatGPTBridge?.execute?.(d)}catch(e){console.error('J bridge handoff failed',e)}};
+    if(window.JChatGPTBridge?.execute)run();else loadCritical('j-chatgpt-bridge.js','JChatGPTBridge',run);
+  }
   function show(d){
-    if(['build_site','build_site_v2'].includes(d.action)){
-      card.classList.remove('open');
-      window.dispatchEvent(new CustomEvent('j-command-seen',{detail:{source:'remote-sync',command_id:d.command_id||'',action:d.action,status:d.status||''}}));
-      return;
-    }
+    if(['build_site','build_site_v2'].includes(d.action)){handoffBuild(d);return}
     card.classList.add('open');
     if(MAC_ACTIONS.has(d.action)){status.textContent=d.status==='failed'?'Sent to Mac Agent':'Mac Agent command';body.innerHTML=`<div class="jRemoteLead"><b>J · MAC AGENT</b><small>${esc(d.display?.label||d.message||'Command sent to Mac.')}</small></div>`;return}
     status.textContent=d.status==='failed'?'Remote task failed':d.status==='complete'?'Remote task complete':'Remote task running';
@@ -28,9 +31,8 @@
     const yt=youtubeInfo(d.video_url||d.url||'');if(yt){html+=`<iframe class="jRemoteVideo" src="${esc(yt.embed)}" title="J video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe><a class="jRemoteOpen" target="_blank" rel="noopener noreferrer" href="${esc(yt.watch)}">OPEN VIDEO IN NEW TAB</a>`}body.innerHTML=html;if(yt){const opened=openNewTab(yt.watch);status.textContent=opened?'Opened video in a new tab':'Video ready — click OPEN VIDEO IN NEW TAB if your browser blocked the automatic tab.'}window.JSafety?.log?.('remote-command',`${d.action||'task'} ${d.status||''}`)
   }
   async function poll(){if(!polling)return;try{const r=await fetch(SOURCE+'?t='+Date.now(),{cache:'no-store',credentials:'include',headers:{'Cache-Control':'no-cache'}});if(!r.ok)throw new Error('sync unavailable');const d=await r.json();window.dispatchEvent(new CustomEvent('j-remote-health',{detail:{ok:true,commandId:d.command_id||'',action:d.action||'',status:d.status||''}}));if(d.command_id&&d.command_id!==lastId){lastId=d.command_id;show(d);if(d.status==='complete'&&!['build_site','build_site_v2'].includes(d.action)){const n=Array.isArray(d.leads)?d.leads.length:Array.isArray(d.items)?d.items.length:0;if(n)window.speak?.(`Remote task complete. I found ${n} results.`,{continueConversation:false})}}}catch(e){window.dispatchEvent(new CustomEvent('j-remote-health',{detail:{ok:false,error:e?.message||'sync unavailable'}}));console.warn('J remote sync',e)}setTimeout(poll,1000)}
-  window.JRemoteSync={show,poll,stop(){polling=false},start(){if(polling)return;polling=true;poll()}};
+  window.JRemoteSync={show,poll,handoffBuild,stop(){polling=false},start(){if(polling)return;polling=true;poll()}};
   poll();
-  function loadCritical(src,globalName){if(globalName&&window[globalName])return;if(document.querySelector(`script[data-j-critical="${src}"]`))return;const s=document.createElement('script');s.src=`./${src}?boot=${Date.now()}`;s.async=false;s.dataset.jCritical=src;s.onerror=()=>console.error('J critical module failed',src);document.head.appendChild(s)}
   loadCritical('j-chatgpt-bridge.js','JChatGPTBridge');
   loadCritical('j-reliability.js','JReliability');
   loadCritical('j-meta-ads.js','JMetaAds');
