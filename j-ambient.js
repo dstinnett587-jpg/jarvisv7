@@ -1,7 +1,7 @@
 (()=>{
   const KEY='KeyJ', AWAY_MS=5*60*1000, STORE='j_ambient_events_v1';
   let held=false, startedAt=0, recognition=null, lastActive=Date.now(), awaySince=0, away=false;
-  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
   function events(){try{return JSON.parse(localStorage.getItem(STORE)||'[]')}catch{return[]}}
   function log(type,detail){const list=events();list.push({type,detail:String(detail||'').slice(0,500),time:Date.now()});localStorage.setItem(STORE,JSON.stringify(list.slice(-100)));window.dispatchEvent(new CustomEvent('j-ambient-event',{detail:{type,detail}}))}
   const style=document.createElement('style');style.textContent=`.jAmbientHint{position:fixed;z-index:70;left:50%;top:max(18px,env(safe-area-inset-top));transform:translate(-50%,-12px);opacity:0;transition:.18s;padding:10px 14px;border:1px solid #ffffff2d;border-radius:999px;background:#080808ee;color:#fff;font:700 10px/1 -apple-system,BlinkMacSystemFont,sans-serif;letter-spacing:.12em;backdrop-filter:blur(16px);pointer-events:none}.jAmbientHint.show{opacity:1;transform:translate(-50%,0)}.jReturnCard{position:fixed;z-index:69;right:14px;top:max(70px,calc(env(safe-area-inset-top) + 58px));width:min(88vw,330px);padding:14px;border:1px solid #ffffff29;border-radius:16px;background:#090909f3;color:#fff;box-shadow:0 18px 50px #000;display:none}.jReturnCard.show{display:block}.jReturnCard b{font-size:10px;letter-spacing:.12em}.jReturnCard p{font-size:12px;line-height:1.45;color:#ddd}.jReturnCard button{border:1px solid #ffffff2a;background:#151515;color:#fff;border-radius:999px;padding:8px 11px;font-size:10px;margin-right:6px}`;document.head.appendChild(style);
@@ -20,5 +20,7 @@
   window.addEventListener('keyup',e=>{if(e.code!==KEY)return;e.preventDefault();endHold()});
   document.addEventListener('visibilitychange',()=>{if(document.hidden){lastActive=Date.now();log('screen','J screen hidden')}else markActive()});
   window.JAmbient={log,events,beginHold,endHold,recap:()=>card.querySelector('[data-recap]').click()};
+  function wireClipEngine(){const bar=document.querySelector('.jQuick');if(!bar||bar.querySelector('[data-jq="clips"]'))return;const loader=document.createElement('script');loader.src='./j-clip-engine.js?v=1';document.body.appendChild(loader);const btn=document.createElement('button');btn.dataset.jq='clips';btn.textContent='Clip Engine';btn.onclick=e=>{e.preventDefault();e.stopPropagation();const tablet=document.getElementById('jTablet');if(tablet){tablet.classList.add('open');tablet.classList.remove('mini')}const go=()=>window.JClipEngine?.render?.();if(window.JClipEngine)return go();loader.addEventListener('load',go,{once:true})};bar.appendChild(btn)}
+  setTimeout(wireClipEngine,350);
   setTimeout(()=>{showHint('HOLD J TO TALK');setTimeout(hideHint,1800)},900);
 })();
