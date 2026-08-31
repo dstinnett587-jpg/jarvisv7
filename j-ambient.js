@@ -1,7 +1,6 @@
 (()=>{
   const KEY='KeyJ', AWAY_MS=5*60*1000, STORE='j_ambient_events_v1';
   let held=false, startedAt=0, recognition=null, lastActive=Date.now(), awaySince=0, away=false;
-  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot',"'":'&#39;'}[c]));
   function events(){try{return JSON.parse(localStorage.getItem(STORE)||'[]')}catch{return[]}}
   function log(type,detail){const list=events();list.push({type,detail:String(detail||'').slice(0,500),time:Date.now()});localStorage.setItem(STORE,JSON.stringify(list.slice(-100)));window.dispatchEvent(new CustomEvent('j-ambient-event',{detail:{type,detail}}))}
   const style=document.createElement('style');style.textContent=`.jAmbientHint{position:fixed;z-index:70;left:50%;top:max(18px,env(safe-area-inset-top));transform:translate(-50%,-12px);opacity:0;transition:.18s;padding:10px 14px;border:1px solid #ffffff2d;border-radius:999px;background:#080808ee;color:#fff;font:700 10px/1 -apple-system,BlinkMacSystemFont,sans-serif;letter-spacing:.12em;backdrop-filter:blur(16px);pointer-events:none}.jAmbientHint.show{opacity:1;transform:translate(-50%,0)}.jReturnCard{position:fixed;z-index:69;right:14px;top:max(70px,calc(env(safe-area-inset-top) + 58px));width:min(88vw,330px);padding:14px;border:1px solid #ffffff29;border-radius:16px;background:#090909f3;color:#fff;box-shadow:0 18px 50px #000;display:none}.jReturnCard.show{display:block}.jReturnCard b{font-size:10px;letter-spacing:.12em}.jReturnCard p{font-size:12px;line-height:1.45;color:#ddd}.jReturnCard button{border:1px solid #ffffff2a;background:#151515;color:#fff;border-radius:999px;padding:8px 11px;font-size:10px;margin-right:6px}`;document.head.appendChild(style);
@@ -9,7 +8,7 @@
   const card=document.createElement('div');card.className='jReturnCard';card.innerHTML='<b>J · WELCOME BACK</b><p>You were away. Want the quick recap?</p><button data-recap>What did I miss?</button><button data-dismiss>Dismiss</button>';document.body.appendChild(card);
   const showHint=t=>{hint.textContent=t;hint.classList.add('show')},hideHint=()=>hint.classList.remove('show');
   function markActive(){lastActive=Date.now();if(away){const mins=Math.max(1,Math.round((Date.now()-awaySince)/60000));away=false;log('returned',`${mins} min away`);card.classList.add('show')}}
-  ['pointerdown','touchstart','mousemove','keydown','visibilitychange','focus'].forEach(ev=>window.addEventListener(ev,markActive,{passive:true}));
+  ['pointerdown','touchstart','mousemove','keydown','focus'].forEach(ev=>window.addEventListener(ev,markActive,{passive:true}));
   setInterval(()=>{if(!away&&Date.now()-lastActive>=AWAY_MS){away=true;awaySince=lastActive;log('away','J entered away mode')}},30000);
   card.querySelector('[data-dismiss]').onclick=()=>card.classList.remove('show');
   card.querySelector('[data-recap]').onclick=()=>{card.classList.remove('show');const recent=events().filter(x=>x.time>=awaySince).slice(-12);const summary=recent.length?recent.map(x=>`${x.type}: ${x.detail}`).join('; '):'No important J activity was recorded while you were away.';window.ask?.(`Give me a short "what did I miss" recap from these trusted local J events: ${summary}`)};
